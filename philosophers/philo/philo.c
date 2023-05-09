@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/09 13:52:10 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/09 15:07:25 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,14 @@ void ft_args_to_numbers(int argc, char **argv, t_data *f)
 		f->nt = -1;	
 }
 
-
+void ft_check_4(t_data *f)
+{
+	if(f->n == 0 || f->td == 0 || f->te == 0 || f->ts == 0 || f->nt == 0)
+	{
+		write(1, "Error\n One of your args equal to ZERO", 1);
+		exit(0);
+	}
+}
 
 
 // typedef struct s_philo_data
@@ -137,38 +144,50 @@ void ft_args_to_numbers(int argc, char **argv, t_data *f)
 // 	struct s_philo_data *next;
 	
 // }t_philo_data;
-void	ft_free_linked_list(t_philo_data *head)
+void	ft_free_linked_list(t_philo_data *p)
 {
 	t_philo_data	*node_saver;
-	while(head)
+	while(p)
 	{
-		node_saver = head;
-		head = head->next;
+		node_saver = p;
+		p = p->next;
 		free(node_saver);
 	}
 }
 
-
+t_philo_data *ft_create_node(t_philo_data *p)
+{
+	p = malloc(sizeof(t_philo_data));
+	if(p == NULL)
+		ft_free_linked_list(p);
+	
+	p->id = 1;
+	p->next = NULL;
+	return (p);
+}
 
 t_philo_data *ft_create_philosophers(t_data *f, t_philo_data *p)
 {
-	t_philo_data *head;
-	head = malloc(sizeof(t_philo_data));
-	if(head == NULL)
-		ft_free_linked(head);
-
-
-
-
+	int i;
+	t_philo_data *old;
+	t_philo_data *cur;
 	
-	while (i < f->n)
+
+	p = ft_create_node(p);
+
+	i = 1;
+	old = p;
+	cur = NULL;
+
+	while(i <= f->n)
 	{
-		//create && init node 
-
-		//link node ->next
-	
+		i++;
+		cur = ft_create_node(cur);
+		old->next = cur;
+		cur = NULL;
+		old = old->next;
 	}
-	return (head);
+	
 }
 //--------------------
 
@@ -186,21 +205,10 @@ int main (int argc, char **argv)
 	ft_check_2(argv);
 	ft_check_3(argv);
 	ft_args_to_numbers(argc, argv, &f);
+	ft_check_4(t_data *f);
 	ft_create_philosophers(&f, &p);
 	
 	// printf("%d     %d     %d   %d    %d", f.n, f.td, f.te, f.ts, f.nt);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	// ft_args_protection(argc, argv);
