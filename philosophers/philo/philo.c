@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/09 15:07:25 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/09 16:37:55 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,58 +155,72 @@ void	ft_free_linked_list(t_philo_data *p)
 	}
 }
 
-t_philo_data *ft_create_node(t_philo_data *p)
+t_philo_data *ft_create_node(t_philo_data *node, int i)
 {
-	p = malloc(sizeof(t_philo_data));
-	if(p == NULL)
-		ft_free_linked_list(p);
+	node = malloc(sizeof(t_philo_data));
+	if(node == NULL)
+		ft_free_linked_list(node);
 	
-	p->id = 1;
-	p->next = NULL;
-	return (p);
+	node->id = i;
+	node->next = NULL;
+	return (node);
 }
 
-t_philo_data *ft_create_philosophers(t_data *f, t_philo_data *p)
+void ft_create_philosophers(t_data *f)
 {
 	int i;
 	t_philo_data *old;
 	t_philo_data *cur;
 	
 
-	p = ft_create_node(p);
+	*p = ft_create_node(f, 1);
 
-	i = 1;
-	old = p;
+	i = 2;
+	old = *p;
 	cur = NULL;
 
 	while(i <= f->n)
 	{
-		i++;
-		cur = ft_create_node(cur);
+		cur = ft_create_node(cur, i);
 		old->next = cur;
 		cur = NULL;
 		old = old->next;
+		i++;
+	}
+}
+//--------------------
+void print_list(t_philo_data *p)
+{
+	t_philo_data *temp;
+	temp = p;
+	while(temp)
+	{
+		printf("here ------\n");
+		printf("%d     ", temp->id);
+		if(temp->next == NULL)
+			break;
+		temp = temp->next;
 	}
 	
 }
-//--------------------
-
-
-
 
 int main (int argc, char **argv)
 {
 	//dont forget to protect pthread create and join...
 	t_data f;
-	t_philo_data p;
+	t_philo_data *p;
 
-	
+	p = NULL;
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
 	ft_args_to_numbers(argc, argv, &f);
-	ft_check_4(t_data *f);
-	ft_create_philosophers(&f, &p);
+	ft_check_4(&f);
+	p = ft_create_philosophers(&f);// re create the this function and printf list function
+
+
+	
+	print_list(p);
 	
 	// printf("%d     %d     %d   %d    %d", f.n, f.td, f.te, f.ts, f.nt);
 

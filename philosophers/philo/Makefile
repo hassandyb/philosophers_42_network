@@ -6,14 +6,14 @@
 #    By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 15:38:43 by hed-dyb           #+#    #+#              #
-#    Updated: 2023/05/08 12:36:18 by hed-dyb          ###   ########.fr        #
+#    Updated: 2023/05/09 16:22:43 by hed-dyb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc 
 RM = rm -f 
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra -g
 FILES = philo.c
 
 OBJ = $(FILES:.c=.o)
