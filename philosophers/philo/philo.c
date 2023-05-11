@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/09 16:37:55 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/11 12:54:04 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,78 +131,73 @@ void ft_check_4(t_data *f)
 		exit(0);
 	}
 }
-
-
-// typedef struct s_philo_data
-// {
-// 	int id;// 1 2 3 4 5 
-// 	pthread_t thread;
-// 	pthread_mutex_t fork;//opthread murtex init
-// 	// unsigned long last_eat; 
-// 	// pthread_mutex_t last_eat_mutex;
-// 	t_data *f;
-// 	struct s_philo_data *next;
-	
-// }t_philo_data;
-void	ft_free_linked_list(t_philo_data *p)
+//-------------------------------
+void	ft_free_linked_list(t_philo_data *head)
 {
 	t_philo_data	*node_saver;
-	while(p)
+	while(head != NULL)
 	{
-		node_saver = p;
-		p = p->next;
+		node_saver = head;
+		head = head->next;
 		free(node_saver);
 	}
 }
 
-t_philo_data *ft_create_node(t_philo_data *node, int i)
+t_philo_data *ft_create_node(int i, t_philo_data *head)
 {
+	t_philo_data *node;
 	node = malloc(sizeof(t_philo_data));
+	printf("here   %d ------\n", i);
 	if(node == NULL)
-		ft_free_linked_list(node);
+	{
+		ft_free_linked_list(head);
+		exit (1);
+	}
 	
 	node->id = i;
 	node->next = NULL;
 	return (node);
+
 }
 
-void ft_create_philosophers(t_data *f)
+
+t_philo_data *ft_create_philosophers(t_data *f)
 {
-	int i;
+	t_philo_data *p;
 	t_philo_data *old;
-	t_philo_data *cur;
-	
+	t_philo_data *new;
+	int i;
 
-	*p = ft_create_node(f, 1);
+	p = NULL;
+	p = ft_create_node(1, p);
 
-	i = 2;
-	old = *p;
-	cur = NULL;
-
-	while(i <= f->n)
+	i = 0;
+	old = p;
+	while(i < f->n - 1)
 	{
-		cur = ft_create_node(cur, i);
-		old->next = cur;
-		cur = NULL;
+		new = ft_create_node(i + 2, p);
+		
+
+		old->next = new;
 		old = old->next;
 		i++;
 	}
+	return (p);
 }
 //--------------------
 void print_list(t_philo_data *p)
 {
-	t_philo_data *temp;
-	temp = p;
-	while(temp)
+	while(p)
 	{
-		printf("here ------\n");
-		printf("%d     ", temp->id);
-		if(temp->next == NULL)
+		// printf("id = %d\n", p->id);
+		if(p->next == NULL)
 			break;
-		temp = temp->next;
+		p = p->next;
 	}
 	
 }
+
+
 
 int main (int argc, char **argv)
 {
