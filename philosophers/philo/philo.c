@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/11 12:54:04 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/11 16:26:50 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	ft_free_linked_list(t_philo_data *head)
 	}
 }
 
-t_philo_data *ft_create_node(int i, t_philo_data *head)
+t_philo_data *ft_create_node(int i, t_philo_data *head, t_data *f)
 {
 	t_philo_data *node;
 	node = malloc(sizeof(t_philo_data));
@@ -156,6 +156,8 @@ t_philo_data *ft_create_node(int i, t_philo_data *head)
 	
 	node->id = i;
 	node->next = NULL;
+	node->data = f;
+	pthread_mutex_init(&node->fork, NULL);
 	return (node);
 
 }
@@ -169,21 +171,69 @@ t_philo_data *ft_create_philosophers(t_data *f)
 	int i;
 
 	p = NULL;
-	p = ft_create_node(1, p);
+	p = ft_create_node(1, p, f);
 
 	i = 0;
 	old = p;
 	while(i < f->n - 1)
 	{
-		new = ft_create_node(i + 2, p);
-		
-
+		new = ft_create_node(i + 2, p, f);
 		old->next = new;
 		old = old->next;
 		i++;
 	}
+	new->next = p;
 	return (p);
 }
+// cerculare linked list
+// you should handler freeing creculaire list also you need to change the function you create for the liked list befor you made it curculaire .
+//--------------------
+
+
+void ft_routine(void *p)
+{
+	
+}
+
+// void ft_initialize(t_philo_data *p)
+// {
+// 	int i;
+	
+
+// 	i = 0;
+//  	while(i < p->data->n)
+// 	{
+// 		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
+// 		{
+// 			write(1, "Error\nPthread_create function failed!", 38);
+// 			ft_free_linked_list(p);
+// 			return ;// add protection
+// 		}
+// 		p = p->next;
+// 		i++;
+// 	}
+
+// 	i = 0;
+// 	while(i < p->data->n)
+// 	{
+// 		if(pthread_join())
+// 	}
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------
 void print_list(t_philo_data *p)
 {
@@ -206,6 +256,7 @@ int main (int argc, char **argv)
 	t_philo_data *p;
 
 	p = NULL;
+	ft_initialize();
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
