@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/11 16:26:50 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/12 12:49:46 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,10 +132,13 @@ void ft_check_4(t_data *f)
 	}
 }
 //-------------------------------
-void	ft_free_linked_list(t_philo_data *head)
+void	ft_free_linked_list(int count, t_philo_data *head)
 {
+	int i;
+
+	i = 0;
 	t_philo_data	*node_saver;
-	while(head != NULL)
+	while(i < count)
 	{
 		node_saver = head;
 		head = head->next;
@@ -143,20 +146,20 @@ void	ft_free_linked_list(t_philo_data *head)
 	}
 }
 
-t_philo_data *ft_create_node(int i, t_philo_data *head, t_data *f)
+t_philo_data *ft_create_node(int count, t_philo_data *head, t_data *f)
 {
 	t_philo_data *node;
 	node = malloc(sizeof(t_philo_data));
-	printf("here   %d ------\n", i);
 	if(node == NULL)
 	{
-		ft_free_linked_list(head);
+		ft_free_linked_list(count, head);
 		exit (1);
 	}
 	
-	node->id = i;
+	node->id = count;
 	node->next = NULL;
 	node->data = f;
+	// printf("here   %d ------\n", node->id);
 	pthread_mutex_init(&node->fork, NULL);
 	return (node);
 
@@ -175,7 +178,7 @@ t_philo_data *ft_create_philosophers(t_data *f)
 
 	i = 0;
 	old = p;
-	while(i < f->n - 1)
+	while(i < f->n - 1)// -1 cause we already create  node above
 	{
 		new = ft_create_node(i + 2, p, f);
 		old->next = new;
@@ -192,33 +195,32 @@ t_philo_data *ft_create_philosophers(t_data *f)
 
 void ft_routine(void *p)
 {
-	
+	printf("ft_routine has been called !!\n");
 }
 
-// void ft_initialize(t_philo_data *p)
-// {
-// 	int i;
+void ft_initialize(t_philo_data *p)
+{
+	int i;
 	
 
-// 	i = 0;
-//  	while(i < p->data->n)
-// 	{
-// 		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
-// 		{
-// 			write(1, "Error\nPthread_create function failed!", 38);
-// 			ft_free_linked_list(p);
-// 			return ;// add protection
-// 		}
-// 		p = p->next;
-// 		i++;
-// 	}
+	i = 0;
+ 	while(i < p->data->n)
+	{
+		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
+		{
+			write(1, "Error\nPthread_create function failed!", 38);
+			exit (1);
+		}
+		p = p->next;
+		i++;
+	}
 
-// 	i = 0;
-// 	while(i < p->data->n)
-// 	{
-// 		if(pthread_join())
-// 	}
-// }
+	i = 0;
+	while(i < p->data->n)
+	{
+		if(pthread_join(p->thread, ))
+	}
+}
 
 
 
@@ -239,7 +241,7 @@ void print_list(t_philo_data *p)
 {
 	while(p)
 	{
-		// printf("id = %d\n", p->id);
+		printf("id = %d\n", p->id);
 		if(p->next == NULL)
 			break;
 		p = p->next;
@@ -256,7 +258,7 @@ int main (int argc, char **argv)
 	t_philo_data *p;
 
 	p = NULL;
-	ft_initialize();
+	// ft_initialize();
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
