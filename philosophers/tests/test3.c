@@ -44,6 +44,6 @@ int main ()
 
 	pthread_create(&newthread, NULL, myturn, NULL);
 	yourturn();
-	pthread_join(newthread, (void *)&result);// pthread_join is used to get the return value of myturn as well.
+	pthread_join(newthread, (void *)&result);// the second parameter of pthread_join is used to get the return of the function inside pthred_create.
 	printf("result = %d\n", *result);
 }

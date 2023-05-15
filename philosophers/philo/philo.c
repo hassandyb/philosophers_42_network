@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/12 12:49:46 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/15 13:35:25 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,16 +192,34 @@ t_philo_data *ft_create_philosophers(t_data *f)
 // you should handler freeing creculaire list also you need to change the function you create for the liked list befor you made it curculaire .
 //--------------------
 
-
-void ft_routine(void *p)
+long ft_timer()
 {
-	printf("ft_routine has been called !!\n");
+	struct timeval t;
+	
+	gettimeofday(&t, NULL);
+	return (t.tv_sec * 1000 + t.tv_usec / 1000);
+}
+
+void  *ft_routine(void *philo)
+{
+	t_philo_data *p;
+
+	p = philo;
+	while(1)
+	{
+		pthread_mutex_lock(&(p->fork));// first thread or philo thathis ft_routines runs will lock all aother thrids. 
+		printf("%ld %d has taken a fork\n", ft_timer(), p->id); 
+		pthread_mutex_lock(&(p->next->fork));
+		printf("%ld %d has taken a fork\n", ft_timer(), p->id);
+		pthread_mutex_unlock(&(p->next->fork));
+		pthread_mutex_unlock(&(p->fork));
+	}
+	 return (NULL);
 }
 
 void ft_initialize(t_philo_data *p)
 {
 	int i;
-	
 
 	i = 0;
  	while(i < p->data->n)
@@ -218,7 +236,13 @@ void ft_initialize(t_philo_data *p)
 	i = 0;
 	while(i < p->data->n)
 	{
-		if(pthread_join(p->thread, ))
+		if(pthread_join(p->thread, NULL) != 0)
+		{
+			write(1, "Error\npthread_join failed!", 27);
+			exit (1);
+		}
+		p = p->next;
+		i++;
 	}
 }
 
@@ -241,10 +265,9 @@ void print_list(t_philo_data *p)
 {
 	while(p)
 	{
-		printf("id = %d\n", p->id);
-		if(p->next == NULL)
-			break;
 		p = p->next;
+		if (p->id == 1)
+		 	break;
 	}
 	
 }
@@ -258,18 +281,13 @@ int main (int argc, char **argv)
 	t_philo_data *p;
 
 	p = NULL;
-	// ft_initialize();
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
 	ft_args_to_numbers(argc, argv, &f);
 	ft_check_4(&f);
 	p = ft_create_philosophers(&f);// re create the this function and printf list function
-
-
-	
-	print_list(p);
-	
+	ft_initialize(p);
 	// printf("%d     %d     %d   %d    %d", f.n, f.td, f.te, f.ts, f.nt);
 
 

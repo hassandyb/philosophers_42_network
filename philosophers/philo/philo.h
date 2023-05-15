@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:40:53 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/12 12:48:19 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/15 13:15:13 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <pthread.h>
+#include <sys/time.h>
 typedef struct s_data
 {
 	int n;
