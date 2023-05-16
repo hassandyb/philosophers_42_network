@@ -6,11 +6,14 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/15 13:35:25 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/16 14:03:24 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int i = 0;
+
 
 void ft_check_1(int argc, char **argv)
 {
@@ -121,6 +124,7 @@ void ft_args_to_numbers(int argc, char **argv, t_data *f)
 		f->nt = ft_atoi(argv[5]);
 	else
 		f->nt = -1;	
+	// f->forks = malloc(sizeof(pthread_mutex_t) * f->n);
 }
 
 void ft_check_4(t_data *f)
@@ -155,7 +159,7 @@ t_philo_data *ft_create_node(int count, t_philo_data *head, t_data *f)
 		ft_free_linked_list(count, head);
 		exit (1);
 	}
-	
+	node->ntimes_must_eat = f->nt;
 	node->id = count;
 	node->next = NULL;
 	node->data = f;
@@ -199,49 +203,104 @@ long ft_timer()
 	gettimeofday(&t, NULL);
 	return (t.tv_sec * 1000 + t.tv_usec / 1000);
 }
-
+long ft_duration(long start_time)
+{
+	return (ft_timer() - start_time);
+}
 void  *ft_routine(void *philo)
 {
 	t_philo_data *p;
-
 	p = philo;
+	p->last_meal = ft_timer();
+	p->start_time = ft_timer();
+	// pthread_mutex_init(&p->fork, NULL);
+	// (void)p->fork.__sig;
+	// printf("%ld\n", p->fork.__sig);
+	// printf("thread number %d stared, fork = %ld\n", p->id, p->fork.__sig);
+	
 	while(1)
 	{
+		
+		// printf("");
 		pthread_mutex_lock(&(p->fork));// first thread or philo thathis ft_routines runs will lock all aother thrids. 
-		printf("%ld %d has taken a fork\n", ft_timer(), p->id); 
+		printf("%ld %d has taken his fork\n", ft_duration(p->start_time), p->id); 
 		pthread_mutex_lock(&(p->next->fork));
-		printf("%ld %d has taken a fork\n", ft_timer(), p->id);
+		printf("%ld %d has taken right fork\n", ft_duration(p->start_time), p->id);
+		p->last_meal = ft_timer();
+		printf("%ld %d is eating\n", ft_duration(p->start_time), p->id);
+
+		(p->ntimes_must_eat)--;
+		
+		
+		usleep(1000 * p->data->te);
 		pthread_mutex_unlock(&(p->next->fork));
 		pthread_mutex_unlock(&(p->fork));
+
+		if(p->ntimes_must_eat == 0)
+		{
+			break;// or return not xit cause we should wait other threads to reach 0;
+			
+		}
+		printf("%ld %d is sleeping\n", ft_duration(p->start_time), p->id);
+		usleep(1000 * p->data->ts);
+		
+		printf("%ld %d is thinking\n", ft_duration(p->start_time), p->id);
+		
+		
 	}
 	 return (NULL);
 }
 
-void ft_initialize(t_philo_data *p)
+
+void ft_print(long time, char *msg,t_philo_data *p)// cause riutines are working in the same time time we need to lock it utile the first one printf the folloed by the second and so on
+{
+	pthread_mutex_lock(&(p->data->lock_print));
+	printf("%ld %d %s\n", time, p->id, msg);
+	pthread_mutex_unlock(&(p->data->lock_print));
+	
+}
+
+void ft_check_death(t_philo_data *p)
+{
+	while(1)
+	{
+		if((ft_timer() - p->last_meal) > (p->data->td))
+		{
+			//free
+			printf("%ld %d died", ft_duration(p->start_time), p->id);// lock the mutex but dont unlock it cause this is the last mesage
+			exit (0);
+		}
+	}
+}
+
+void ft_initialize(t_philo_data **p)
 {
 	int i;
 
 	i = 0;
- 	while(i < p->data->n)
+ 	while(i < (*p)->data->n)
 	{
-		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
+		if(pthread_create(&((*p)->thread), NULL, ft_routine, *p) != 0)
 		{
 			write(1, "Error\nPthread_create function failed!", 38);
 			exit (1);
 		}
-		p = p->next;
+		usleep(100);
+		(*p) = (*p)->next;
 		i++;
 	}
 
+	ft_check_death(*p);
+	
 	i = 0;
-	while(i < p->data->n)
+	while(i < (*p)->data->n)
 	{
-		if(pthread_join(p->thread, NULL) != 0)
+		if(pthread_join((*p)->thread, NULL) != 0)
 		{
 			write(1, "Error\npthread_join failed!", 27);
 			exit (1);
 		}
-		p = p->next;
+		*p = (*p)->next;
 		i++;
 	}
 }
@@ -279,6 +338,7 @@ int main (int argc, char **argv)
 	//dont forget to protect pthread create and join...
 	t_data f;
 	t_philo_data *p;
+	// int i = -1;
 
 	p = NULL;
 	ft_check_1(argc, argv);
@@ -286,8 +346,10 @@ int main (int argc, char **argv)
 	ft_check_3(argv);
 	ft_args_to_numbers(argc, argv, &f);
 	ft_check_4(&f);
+	// while (++i < f.n)
+	// 	pthread_mutex_init(f.forks, NULL);
 	p = ft_create_philosophers(&f);// re create the this function and printf list function
-	ft_initialize(p);
+	ft_initialize(&p);
 	// printf("%d     %d     %d   %d    %d", f.n, f.td, f.te, f.ts, f.nt);
 
 
