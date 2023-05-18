@@ -4,6 +4,7 @@
 
 int slod = 0;
 pthread_mutex_t lock;
+
 void *user(void *data)
 {
 	int x = *(int *) data;

@@ -16,7 +16,7 @@ long long a = 0;
 
 void *ft_count(void *arg)
 {
-	while(a < 10000000)
+	while(a < 1000000000)
 	{
 		a++;
 		// usleep(10);
@@ -27,13 +27,15 @@ void *ft_count(void *arg)
 
 int main ()
 {
-	int n = 20;
-	pthread_t t[20];
+	pthread_t t[30];
 	int i = -1;
-	while(++i < 20)
+	while(++i < 30)
+	{
 		pthread_create(&t[i], NULL, ft_count, NULL);
+		usleep(10000);
+	}
 	i = -1;
-	while(++i < 20)
+	while(++i < 30)
 		pthread_join(t[i], NULL);
 
 
