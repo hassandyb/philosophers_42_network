@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 18:36:27 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/19 19:10:20 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,11 @@ void *ft_routine(void *arg)
 	t_philo *p;
 	
 	p = arg;
-	printf("thread number %d has been called\n", p->id);
-	// exit(0);
+	while(1)
+	{
+		pthread_mutex_lock(&(p->fork));// in this stage threads/ philos try to take their fork 
+		
+	}
 	return NULL;
 }
 

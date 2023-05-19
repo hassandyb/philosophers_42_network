@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 18:21:38 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/19 19:12:58 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ typedef struct s_philo
 	// used in ft_pthread_craete and ft_pthread_join
 	pthread_t thread;
 	
+	// used in ft_routine
+	long started_time; // started epoch time for each thread - we need to store each time a thread started
 	
-	// long start_time;
 	// long last_meal;  //==> store the last time a philo eat
 	
 	
