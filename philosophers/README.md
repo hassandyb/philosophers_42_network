@@ -48,3 +48,22 @@ https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNk
 https://velog.io/@hidaehyunlee/Philosophers-Dining-philosophers-problem-%EC%86%8C%EA%B0%9C
 https://velog.io/@junppyo/philosopher
 https://namu.wiki/w/%EC%8B%9D%EC%82%AC%ED%95%98%EB%8A%94%20%EC%B2%A0%ED%95%99%EC%9E%90%20%EB%AC%B8%EC%A0%9C
+
+
+pthread_mutex_init
+
+It shall be safe to destroy an initialized mutex that is unlocked. Attempting to destroy a locked mutex results in undefined behavior.
+
+
+Attempting to initialize an already initialized mutex results in undefined behavior.
+
+
+
+
+
+
+
+
+
+
+

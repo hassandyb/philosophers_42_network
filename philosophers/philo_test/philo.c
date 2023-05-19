@@ -6,13 +6,11 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/18 10:57:58 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/19 14:57:38 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int i = 0;
 
 
 void ft_check_1(int argc, char **argv)
@@ -136,39 +134,6 @@ void ft_check_4(t_data *f)
 	}
 }
 //-------------------------------
-void	ft_free_linked_list(int count, t_philo_data *head)
-{
-	int i;
-
-	i = 0;
-	t_philo_data	*node_saver;
-	while(i < count)
-	{
-		node_saver = head;
-		head = head->next;
-		free(node_saver);
-	}
-}
-
-t_philo_data *ft_create_node(int count, t_philo_data *head, t_data *f)
-{
-	t_philo_data *node;
-	node = malloc(sizeof(t_philo_data));
-	if(node == NULL)
-	{
-		ft_free_linked_list(count, head);
-		exit (1);
-	}
-	node->ntimes_must_eat = f->nt;
-	node->id = count;
-	node->next = NULL;
-	node->data = f;
-	// printf("here   %d ------\n", node->id);
-	pthread_mutex_init(&node->fork, NULL);
-	return (node);
-
-}
-
 
 t_philo_data *ft_create_philosophers(t_data *f)
 {

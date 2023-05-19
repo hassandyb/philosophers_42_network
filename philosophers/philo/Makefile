@@ -6,7 +6,7 @@
 #    By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/18 15:08:18 by hed-dyb           #+#    #+#              #
-#    Updated: 2023/05/18 15:08:39 by hed-dyb          ###   ########.fr        #
+#    Updated: 2023/05/19 14:49:54 by hed-dyb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philo
 CC = cc 
 RM = rm -f 
 FLAGS = -Wall -Werror -Wextra 
-FILES = philo.c
+FILES = philo.c parsing.c utils.c
 
 OBJ = $(FILES:.c=.o)
 
