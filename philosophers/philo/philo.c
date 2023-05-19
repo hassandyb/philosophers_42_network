@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 17:16:16 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/19 18:36:27 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_philo *ft_create_node(int count, t_philo *head, t_info *i)
 	if(node == NULL)
 	{
 		ft_free_linked_list(count, head);
-		return;
+		return NULL;
 	}
 
 	node->id = count;
@@ -47,12 +47,11 @@ t_philo *ft_create_node(int count, t_philo *head, t_info *i)
 	if(r != 0)
 	{
 		ft_free_linked_list(count, head);
-		return;
+		return NULL;
 	}
 	return (node);
 
 }
-
 
 t_philo *ft_create_philosophers(t_info *i)
 {
@@ -77,7 +76,62 @@ t_philo *ft_create_philosophers(t_info *i)
 	return (p);
 }
 
-//
+// threads
+
+void *ft_routine(void *arg)
+{
+	t_philo *p;
+	
+	p = arg;
+	printf("thread number %d has been called\n", p->id);
+	// exit(0);
+	return NULL;
+}
+
+void ft_create_threads(t_philo *p)
+{
+	int j;
+	int r;
+
+
+	j = 0;
+	while(j < p->info->n)
+	{
+		r = pthread_create(&(p->thread), NULL, ft_routine, p);
+		if(r != 0)
+		{
+			printf("Error\npthread-create failed!");
+			ft_free_linked_list(p->info->n, p);
+			return ;
+		}
+		usleep(100);
+		p = p->next;
+		j++;
+
+	}
+}
+
+void ft_join_threads(t_philo *p)
+{
+	int j;
+	int r;
+	
+
+	j = 0;
+	while(j < p->info->n)
+	{
+		r = pthread_join(p->thread, NULL);
+		if(r != 0)
+		{
+			printf("Error\npthread_join failed!");
+			ft_free_linked_list(p->info->n, p);
+			return ;
+		}
+		p = p->next;
+		j++;
+	}
+}
+
 int main(int argc, char **argv)
 {
 	t_info i;
@@ -93,7 +147,10 @@ int main(int argc, char **argv)
 	{
 		ft_create_threads(p);
 		ft_join_threads(p);
+
 	}
+	
+
 		
 
 	

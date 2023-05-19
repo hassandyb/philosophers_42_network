@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 15:10:05 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/19 18:21:38 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,19 @@ typedef struct s_info
 
 typedef struct s_philo
 {
-	//initilozed in the philo creating stage;
+	//initilozed in tft_create_philosophers function;
 	int id;
 	int nt_count;//(nt) for each one , int the number if phols must eat    => because for each philo we need to increment evry time he eats so we exit onc e the variable raecher zero for each  pholo
 	t_info *info;
 	pthread_mutex_t fork;
 	struct s_philo *next;
 	
+	// used in ft_pthread_craete and ft_pthread_join
+	pthread_t thread;
 	
 	
 	// long start_time;
 	// long last_meal;  //==> store the last time a philo eat
-	// pthread_t thread;
 	
 	
 }t_philo;
