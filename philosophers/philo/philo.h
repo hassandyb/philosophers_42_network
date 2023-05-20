@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/20 13:13:38 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/20 18:12:49 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_philo
 	long started_time; // started epoch time for each thread - we need to store each time a thread started
 	
 	long last_eat;  //==> store the last time a philo eat
+	pthread_mutex_t last_eat;
 	int eating_times;
 	
 }t_philo;

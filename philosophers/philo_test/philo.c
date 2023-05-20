@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/20 12:01:07 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/20 15:01:18 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,7 @@ void ft_check_death(t_philo_data *p)
 			printf("%ld %d died", ft_duration(p->start_time), p->id);// lock the mutex but dont unlock it cause this is the last mesage
 			return;
 		}
+		p = p->next;
 	}
 }
 
