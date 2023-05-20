@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 19:10:20 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/20 13:14:08 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,43 @@ t_philo *ft_create_philosophers(t_info *i)
 
 // threads
 
+long ft_epoch_time()
+{
+	struct timeval tv;
+	int r;
+	
+	r = gettimeofday(&tv, NULL);
+	if(r != 0)
+		return (-1);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
+}
+
+long ft_count_time(t_philo *p)
+{
+	return (ft_epoch_time() - p->started_time);
+}
+
 void *ft_routine(void *arg)
 {
 	t_philo *p;
 	
 	p = arg;
-	while(1)
+	p->started_time = ft_epoch_time();
+	while(p != NULL)
 	{
-		pthread_mutex_lock(&(p->fork));// in this stage threads/ philos try to take their fork 
+		pthread_mutex_lock(&(p->fork));// in this stage threads/ philos try to take their fork
+		printf("%ld %d has taken a fork\n", ft_count_time(p), p->id);
+		pthread_mutex_lock(&(p->next->fork));// in the stage a philos trying to kake the lest forks 
+		printf("%ld %d has taken the left fork\n", ft_count_time(p), p->id);
+		
+		p->last_eat = ft_epoch_lime();
+		printf("%ld %d is eating\n", ft_count_time(p), p->id);
+		p->eating_times--;
+		
+		usleep(p->info->te * 1000);		
+		pthread_mutex_unlock(&(p->next->fork));
+		pthread_mutex_unlock(&(p->fork));
+		
 		
 	}
 	return NULL;

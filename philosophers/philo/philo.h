@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/19 19:12:58 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/20 13:13:38 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_info
 	int	td;//if this time runs out and the philo did not eat again or after the beginig of the program they die,
 	int	te;// the time needs by a philo to eat, it requirse for a philo to hold tow forks.
 	int	ts;//time the philo spend sleeping
-	int	nt;// program stops when the philosophers eat nt times exactly.
+	int	nt;// number_of_times_each_philosopher_must_eat - program stops when the philosophers eat nt times exactly.
 	// pthread_mutex_t printf_mutex;
 
 	
@@ -48,8 +48,8 @@ typedef struct s_philo
 	// used in ft_routine
 	long started_time; // started epoch time for each thread - we need to store each time a thread started
 	
-	// long last_meal;  //==> store the last time a philo eat
-	
+	long last_eat;  //==> store the last time a philo eat
+	int eating_times;
 	
 }t_philo;
 
