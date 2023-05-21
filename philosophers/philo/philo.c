@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/20 18:05:37 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/21 13:26:02 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,8 @@ void *ft_routine(void *arg)
 		
 		p->last_eat = ft_epoch_time();
 		printf("%ld %d is eating\n", ft_count_time(p), p->id);
-		
-		p->eating_times--;
-		
+		if (p->info->nt != -1)
+			p->eating_times--;
 		usleep(p->info->te * 1000);		
 		pthread_mutex_unlock(&(p->next->fork));
 		pthread_mutex_unlock(&(p->fork));
@@ -177,19 +176,38 @@ void ft_join_threads(t_philo *p)
 	}
 }
 
+
+
+int check_if_done(t_philo *p)
+{
+	int i = 0;
+	while (i++ < p->info->n)
+	{
+		if (p->eating_times != 0)
+			return (0);
+		p = p->next;
+	}
+	return (1);
+}
+
 void ft_check_death(t_philo *p)
 {
 	while(p != NULL)
 	{
-		//printf("------.\n");
-		if(ft_count_time(p) - p->last_eat >= p->info->td)
+		// printf()
+		pthread_mutex_lock(&(p->last_eat_mutex));
+		if(p->eating_times != 0 && ft_epoch_time() - p->last_eat >= p->info->td)
 		{
 			printf("%ld %d died\n", ft_count_time(p), p->id);
 			break;
 		}
+		pthread_mutex_unlock(&(p->last_eat_mutex));
+		if (p->info->nt != -1 && check_if_done(p))
+			return ;
 		p = p->next;
 	}
 }
+
 int main(int argc, char **argv)
 {
 	t_info i;
@@ -205,10 +223,10 @@ int main(int argc, char **argv)
 	{
 		ft_create_threads(p);
 		ft_check_death(p);
-		ft_join_threads(p);
+		// ft_join_threads(p);
 
 	}
-	ft_free_linked_list(p->info->n, p);
+	// ft_free_linked_list(p->info->n, p);
 }
 
 
