@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/21 12:59:44 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/21 16:46:10 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_philo
 	long last_eat;  //==> store the last time a philo eat
 	pthread_mutex_t last_eat_mutex;
 	int eating_times;
+	pthread_mutex_t eating_times_mutex;
 	
 }t_philo;
 

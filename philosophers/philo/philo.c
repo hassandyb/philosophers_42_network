@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/21 15:57:15 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/21 17:29:32 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@ void	ft_free_linked_list(int count, t_philo *p)
 		node_saver = p;
 		p = p->next;
 		free(node_saver);
+		x++;
 	}
 	p = NULL;
 }
 
 t_philo *ft_create_node(int count, t_philo *p, t_info *i)
 {
-	int r;
+	// int r;
 	t_philo *node;
 	node = malloc(sizeof(t_philo));
 	if(node == NULL)
@@ -44,15 +45,15 @@ t_philo *ft_create_node(int count, t_philo *p, t_info *i)
 	node->next = NULL;
 
 	node->eating_times = i->nt;
-	
-
-	r = pthread_mutex_init(&node->fork, NULL);// to create a mutex for each thread - initize a mutex for each thread
-	if(r != 0)
-	{
-		printf("Error\npthread_mutex_init failed!");
-		ft_free_linked_list(count, p);
-		return NULL;
-	}
+	pthread_mutex_init(&node->eating_times_mutex, NULL);
+	pthread_mutex_init(&node->last_eat_mutex, NULL);
+	pthread_mutex_init(&node->fork, NULL);// to create a mutex for each thread - initize a mutex for each thread
+	// if(r != 0)
+	// {
+	// 	printf("Error\n!");
+	// 	ft_free_linked_list(count, p);
+	// 	return NULL;
+	// }
 	return (node);
 
 }
@@ -107,18 +108,17 @@ void *ft_routine(void *arg)
 	t_philo *p;
 	
 	p = arg;
-	p->started_time = ft_epoch_time();
-	p->last_eat = ft_epoch_time();
 	
 	while(p != NULL)
 	{
-		pthread_mutex_lock(&(p->fork));// in this stage threads/ philos try to take their fork
+		pthread_mutex_lock(&p->fork);// in this stage threads/ philos try to take their fork
 		printf("%ld %d has taken a fork\n", ft_count_time(p), p->id);
-		pthread_mutex_lock(&(p->next->fork));// in the stage a philos trying to kake the lest forks 
+		pthread_mutex_lock(&p->next->fork);// in the stage a philos trying to kake the lest forks 
 		printf("%ld %d has taken the left fork\n", ft_count_time(p), p->id);
-		
-		p->last_eat = ft_epoch_time();
 		printf("%ld %d is eating\n", ft_count_time(p), p->id);
+		pthread_mutex_lock(&p->last_eat_mutex);
+		p->last_eat = ft_epoch_time();
+		pthread_mutex_unlock(&p->last_eat_mutex);
 		
 
 
@@ -132,11 +132,13 @@ void *ft_routine(void *arg)
 		
 		printf("%ld %d is thinking\n", ft_count_time(p), p->id);
 		
+		pthread_mutex_lock(&(p->eating_times_mutex));
 		if (p->info->nt != -1)
 			p->eating_times--;
 		if(p->eating_times == 0)
 			break ;
-
+		pthread_mutex_lock(&(p->eating_times_mutex));
+		
 		// printf("-----------------------\n")
 		
 	}
@@ -154,6 +156,9 @@ void ft_create_threads(t_philo *p)
 	j = 0;
 	while(j < p->info->n)
 	{
+
+		p->started_time = ft_epoch_time();
+		p->last_eat = p->started_time;
 		r1 = pthread_create(&(p->thread), NULL, ft_routine, p);
 		r2 = pthread_detach(p->thread);
 		if(r1 != 0 || r2 != 0)
@@ -195,8 +200,10 @@ int check_if_done(t_philo *p)
 	int i = 0;
 	while (i++ < p->info->n)
 	{
+		pthread_mutex_lock(&p->eating_times_mutex);
 		if (p->eating_times != 0)
 			return (0);
+		pthread_mutex_unlock(&p->eating_times_mutex);
 		p = p->next;
 	}
 	return (1);
@@ -204,18 +211,24 @@ int check_if_done(t_philo *p)
 
 void ft_check_death_and_starvation(t_philo *p)
 {
+	long t;
 	while(p != NULL)
 	{
 		// printf()
-		// pthread_mutex_lock(&(p->last_eat_mutex));
-		if(p->eating_times != 0 && ft_epoch_time() - p->last_eat >= p->info->td)
+		pthread_mutex_lock(&p->last_eat_mutex);
+		t = p->last_eat;
+		pthread_mutex_unlock(&p->last_eat_mutex);
+		
+		pthread_mutex_lock(&(p->eating_times_mutex));
+		if(p->eating_times != 0 
+			&& ft_epoch_time() -  t >= p->info->td)
 		// if we have nt number of times each philo must eat => after the philo eat nt times we dont care about starving anymore
 		
 		{
 			printf("%ld %d died\n", ft_count_time(p), p->id);
 			break;
 		}
-		// pthread_mutex_unlock(&(p->last_eat_mutex));
+		pthread_mutex_unlock(&(p->eating_times_mutex));
 		if (p->info->nt != -1 && check_if_done(p))
 			return ;
 		p = p->next;
@@ -224,15 +237,15 @@ void ft_check_death_and_starvation(t_philo *p)
 
 int main(int argc, char **argv)
 {
-	t_info i;
+	t_info *i = malloc(sizeof(t_info));
 	t_philo *p;
 	
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
-	ft_args_to_numbers(argc, argv, &i);
-	ft_check_4(&i);
-	p = ft_create_philosophers(&i);
+	ft_args_to_numbers(argc, argv, i);
+	ft_check_4(i);
+	p = ft_create_philosophers(i);
 	if(p != NULL)
 	{
 		ft_create_threads(p);
