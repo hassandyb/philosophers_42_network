@@ -12,7 +12,7 @@ each procees has
 --> lockes
 --> sockets
 
-thread ??
+==> thread ??
 
 A thread is the smallest unit that can perform work on a CPU. In other words, at least 1 thread is required to do anything.
 And by default, when you run a program, it allocates one thread. We'll allocate as many threads as there are philosophers here.
@@ -22,7 +22,7 @@ thread == thread runs a small part of the process
 RAM == (random access memory) when you run a program =>operating system takes a copy of the data the program to the ram - when the program finished the original data in the memory will be updated with data from the ram
 
 
-deference between process and threads???
+==> deference between process and threads???
 
 processes are indepent from each other and dont share any thing
 threads share the memro allocated in the heap - the code - static/global memory 
@@ -50,12 +50,29 @@ https://velog.io/@junppyo/philosopher
 https://namu.wiki/w/%EC%8B%9D%EC%82%AC%ED%95%98%EB%8A%94%20%EC%B2%A0%ED%95%99%EC%9E%90%20%EB%AC%B8%EC%A0%9C
 
 
-pthread_mutex_init
+==> pthread_mutex_init
 
 It shall be safe to destroy an initialized mutex that is unlocked. Attempting to destroy a locked mutex results in undefined behavior.
 
 
 Attempting to initialize an already initialized mutex results in undefined behavior.
+
+
+==> deference between pthread_join and pthread_detach
+
+pthread_join() tells the main thread to wait for the joined thread to finish. pthread_detach() tells the system to automatically release the resources used by the detached thread when it terminates. The main thread will continue executing after calling pthread_detach(), but it will not end until the detached thread finishes.
+
+Here is a table that summarizes the differences between pthread_join() and pthread_detach():
+
+Function			Description
+pthread_join()		Waits for the thread to finish and returns its exit status.
+pthread_detach()	Detaches the thread and releases its resources when it terminates. The main thread 
+
+
+
+
+will continue executing after calling pthread_detach().
+The choice of which function to use depends on the specific requirements of the application. If the main thread needs to wait for the thread to finish, then pthread_join() should be used. If the main thread does not need to wait for the thread to finish, then pthread_detach() can be used.
 
 
 
