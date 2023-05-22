@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/22 12:03:21 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/22 14:12:55 by hed-dyb          ###   ########.fr       */
+/*   Created: 2023/05/18 18:46:20 by hed-dyb           #+#    #+#             */
+/*   Updated: 2023/05/18 18:53:40 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_check_1(int argc, char **argv)
+void ft_check_1(int argc, char **argv)
 {
 	int j;
 	int i;
@@ -20,7 +20,7 @@ int ft_check_1(int argc, char **argv)
 	if(argc != 5 && argc != 6)
 	{
 		write(1, "Error\ncheck args number!", 25);
-		return 0;
+		exit(1);
 	}
 	j = 1;// to avid the excutable
 	while(argv[j])
@@ -31,15 +31,14 @@ int ft_check_1(int argc, char **argv)
 		if(argv[j][i] == '\0' || argv[j][0] == '\0')
 		{
 			write(1, "Error\nEmpty argument or arument full of tabs and spaces",56);
-			return 0;
+			exit(1);
 		}
 		j++;
 	}
-	return 1;
 }
 
 
-int	ft_check_2(char **argv)
+void	ft_check_2(char **argv)
 {
 	int	j;
 	int	i;
@@ -54,21 +53,20 @@ int	ft_check_2(char **argv)
 				&& (argv[j][i] < '0' || argv[j][i] > '9'))
 			{
 				write(2, "Error\nWrong charcter or you have -!", 36);
-				return (0);
+				exit(0);
 			}
 			if (argv[j][i] == '+' && (argv[j][i + 1] == ' ' || argv[j][i + 1] == '\t' || argv[j][i + 1] == '\0'))
 			{
 				write(2, "Error\nSign + followed by Tab, space or null char!", 50);
-				return (0);
+				exit(0);
 			}
 			i++;
 		}
 		j++;
 	}
-	return (1);
 }
 
-int	ft_check_3(char **argv)
+void	ft_check_3(char **argv)
 {
 	int	y;
 	int	x;
@@ -82,56 +80,22 @@ int	ft_check_3(char **argv)
 			if ((argv[y][x] >= '0' && argv[y][x] <= '9') && argv[y][x + 1] == '+')
 			{
 				write(1, "Error\nAdd space or tab after the sign +", 40);
-				return (0);
+				exit (0);
 			}
 			if(argv[y][x] == '+' && argv[y][x] == '+')
 			{
 				write(1, "Error\nYou have double + or more", 32);
-				return (0);
+				exit(0);
 			}
 			x++;
 		}
 		y++;
 	}
-	return 1;
 }
 
-int ft_check_4(t_info *i)
+void ft_args_to_numbers(int argc, char **argv, t_info *i)
 {
-	if(i->n == 0 || i->td == 0 || i->te == 0 || i->ts == 0 || i->nt == 0)
-	{
-		write(1, "Error\n One of your args equal to ZERO", 1);
-		return 0;
-	}
-	return 1;
-}
-
-
-	int n;
-	int	td;
-	int	te;
-	int	ts;
-	int	nt;
-	
-t_info	*ft_parsing(int argc, char **argv)
-{
-	t_info *i;
-	i = malloc(sizeof(t_info));
-	if(i == NULL)
-		return NULL;
-	if(ft_check_1(argc, argv) == 0)
-		return NULL;
-	if(ft_check_2(argv) == 0)
-		return NULL;
-	if(ft_check_3(argv) == 0)
-		return NULL;
-
-
-
-		
 	i->n = ft_atoi(argv[1]);// indice 0 is the executable
-
-	
 	i->td = ft_atoi(argv[2]);
 	i->te = ft_atoi(argv[3]);
 	i->ts = ft_atoi(argv[4]);
@@ -139,7 +103,14 @@ t_info	*ft_parsing(int argc, char **argv)
 		i->nt = ft_atoi(argv[5]);
 	else
 		i->nt = -1;	
-	if(ft_check_4(i) == 0)
-		return NULL;
-	return (i);
+
+}
+
+void ft_check_4(t_info *i)
+{
+	if(i->n == 0 || i->td == 0 || i->te == 0 || i->ts == 0 || i->nt == 0)
+	{
+		write(1, "Error\n One of your args equal to ZERO", 1);
+		exit(0);
+	}
 }

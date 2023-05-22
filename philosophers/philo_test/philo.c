@@ -5,310 +5,269 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/04 15:39:52 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/20 15:01:18 by hed-dyb          ###   ########.fr       */
+/*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
+/*   Updated: 2023/05/22 12:07:00 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
-void ft_check_1(int argc, char **argv)
+// creating philosophers.
+void	ft_free_linked_list(int count, t_philo *p)
 {
-	int j;
-	int i;
-	
-	if(argc != 5 && argc != 6)
+	int x;
+
+	x = 0;
+	t_philo	*node_saver;
+	while(x < count)
 	{
-		write(1, "Error\ncheck args number!", 25);
-		exit(1);
+		node_saver = p;
+		p = p->next;
+		free(node_saver);
+		x++;
 	}
-	j = 1;// to avid the excutable
-	while(argv[j])
-	{
-		i = 0;
-		while(argv[j][i] && (argv[j][i] == ' ' || argv[j][i] == '\t'))
-			i++;
-		if(argv[j][i] == '\0' || argv[j][0] == '\0')
-		{
-			write(1, "Error\nEmpty argument or arument full of tabs and spaces",56);
-			exit(1);
-		}
-		j++;
-	}
+	p = NULL;
 }
 
-void	ft_check_2(char **argv)
+t_philo *ft_create_node(int count, t_philo *p, t_info *i)
 {
-	int	j;
-	int	i;
-
-	j = 1;
-	while (argv[j])
+	// int r;
+	t_philo *node;
+	node = malloc(sizeof(t_philo));
+	if(node == NULL)
 	{
-		i = 0;
-		while (argv[j][i])
-		{
-			if (argv[j][i] != ' ' && argv[j][i] != '\t' && argv[j][i] != '+' 
-				&& (argv[j][i] < '0' || argv[j][i] > '9'))
-			{
-				write(2, "Error\nWrong charcter or you have -!", 36);
-				exit(0);
-			}
-			if (argv[j][i] == '+' && (argv[j][i + 1] == ' ' || argv[j][i + 1] == '\t' || argv[j][i + 1] == '\0'))
-			{
-				write(2, "Error\nSign + followed by Tab, space or null char!", 50);
-				exit(0);
-			}
-			i++;
-		}
-		j++;
+		ft_free_linked_list(count, p);
+		return NULL;
 	}
+
+	node->id = count;
+	node->nt_count = i->nt;
+	node->info = i;
+	node->next = NULL;
+
+	node->eating_times = i->nt;
+	pthread_mutex_init(&node->eating_times_mutex, NULL);
+	pthread_mutex_init(&node->last_eat_mutex, NULL);
+	pthread_mutex_init(&node->fork, NULL);// to create a mutex for each thread - initize a mutex for each thread
+	// if(r != 0)
+	// {
+	// 	printf("Error\n!");
+	// 	ft_free_linked_list(count, p);
+	// 	return NULL;
+	// }
+	return (node);
+
 }
 
-void	ft_check_3(char **argv)
+t_philo *ft_create_philosophers(t_info *i)
 {
-	int	y;
-	int	x;
-
-	y = 1;
-	while (argv[y])
-	{
-		x = 0;
-		while (argv[y][x])
-		{
-			if ((argv[y][x] >= '0' && argv[y][x] <= '9') && argv[y][x + 1] == '+')
-			{
-				write(1, "Error\nAdd space or tab after the sign +", 40);
-				exit (0);
-			}
-			if(argv[y][x] == '+' && argv[y][x] == '+')
-			{
-				write(1, "Error\nYou have double + or more", 32);
-				exit(0);
-			}
-			x++;
-		}
-		y++;
-	}
-}
-//--------------------
-int ft_atoi(char *arg)
-{
-	int i;
-	int result;
-	
-	i = 0;
-	result = 0;
-	while(arg[i] == ' ' || (arg[i] >= 9 && arg[i] <= 13))
-		i++;
-	if(arg[i] == '+')
-		i++;
-	while(arg[i])
-	{
-		result = (result * 10) + (arg[i] - '0');
-		i++;
-	}
-	return result;
-}
-
-void ft_args_to_numbers(int argc, char **argv, t_data *f)
-{
-	f->n = ft_atoi(argv[1]);// indice 0 is the executable
-	f->td = ft_atoi(argv[2]);
-	f->te = ft_atoi(argv[3]);
-	f->ts = ft_atoi(argv[4]);
-	if(argc == 6)
-		f->nt = ft_atoi(argv[5]);
-	else
-		f->nt = -1;	
-	// f->forks = malloc(sizeof(pthread_mutex_t) * f->n);
-}
-
-void ft_check_4(t_data *f)
-{
-	if(f->n == 0 || f->td == 0 || f->te == 0 || f->ts == 0 || f->nt == 0)
-	{
-		write(1, "Error\n One of your args equal to ZERO", 1);
-		exit(0);
-	}
-}
-//-------------------------------
-
-t_philo_data *ft_create_philosophers(t_data *f)
-{
-	t_philo_data *p;
-	t_philo_data *old;
-	t_philo_data *new;
-	int i;
+	t_philo *p;
+	t_philo *old;
+	t_philo *new;
+	int x;
 
 	p = NULL;
-	p = ft_create_node(1, p, f);
+	p = ft_create_node(1, p, i);
+	if(p == NULL)
+		return NULL;
 
-	i = 0;
+	x = 0;
 	old = p;
-	while(i < f->n - 1)// -1 cause we already create  node above
+	while(x < i-> n - 1)// -1 cause we already create  node above - in case of failed allocation old == p == null
 	{
-		new = ft_create_node(i + 2, p, f);
+		new = ft_create_node(x + 2, p, i);
+		if(p == NULL)
+			return NULL;
 		old->next = new;
 		old = old->next;
-		i++;
+		x++;
 	}
 	new->next = p;
 	return (p);
 }
-// cerculare linked list
-// you should handler freeing creculaire list also you need to change the function you create for the liked list befor you made it curculaire .
-//--------------------------------
 
-long ft_timer()
+// threads
+
+long ft_epoch_time()
 {
-	struct timeval t;
+	struct timeval tv;
+	int r;
 	
-	gettimeofday(&t, NULL);
-	return (t.tv_sec * 1000 + t.tv_usec / 1000);
+	r = gettimeofday(&tv, NULL);
+	if(r != 0)
+		return (-1);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
 }
 
-long ft_duration(long start_time)
+long ft_count_time(t_philo *p)
 {
-	return (ft_timer() - start_time);
+	return (ft_epoch_time() - p->started_time);
 }
 
-void  *ft_routine(void *philo)
+void *ft_routine(void *arg)
 {
-	t_philo_data *p;
-	p = philo;
-	p->last_meal = ft_timer();
-	p->start_time = ft_timer();
-	// pthread_mutex_init(&p->fork, NULL);
-	// (void)p->fork.__sig;
-	// printf("%ld\n", p->fork.__sig);
-	// printf("thread number %d stared, fork = %ld\n", p->id, p->fork.__sig);
+	t_philo *p;
 	
-	while(1)
+	p = arg;
+	
+	while(p != NULL)
 	{
+		pthread_mutex_lock(&p->fork);// in this stage threads/ philos try to take their fork
+		printf("%ld %d has taken a fork\n", ft_count_time(p), p->id);
+		pthread_mutex_lock(&p->next->fork);// in the stage a philos trying to kake the lest forks 
+		printf("%ld %d has taken the left fork\n", ft_count_time(p), p->id);
+		printf("%ld %d is eating\n", ft_count_time(p), p->id);
+		pthread_mutex_lock(&p->last_eat_mutex);
+		p->last_eat = ft_epoch_time();
+		pthread_mutex_unlock(&p->last_eat_mutex);
 		
-		// printf("");
-		pthread_mutex_lock(&(p->fork));// first thread or philo thathis ft_routines runs will lock all aother thrids. 
-		printf("%ld %d has taken his fork\n", ft_duration(p->start_time), p->id); 
-		pthread_mutex_lock(&(p->next->fork));
-		printf("%ld %d has taken right fork\n", ft_duration(p->start_time), p->id);
-		p->last_meal = ft_timer();
-		printf("%ld %d is eating\n", ft_duration(p->start_time), p->id);
 
-		(p->ntimes_must_eat)--;
-		
-		
-		usleep(1000 * p->data->te);
+		usleep(p->info->te * 1000);		
 		pthread_mutex_unlock(&(p->next->fork));
 		pthread_mutex_unlock(&(p->fork));
 
-		if(p->ntimes_must_eat == 0)
-		{
-			break;// or return not xit cause we should wait other threads to reach 0;
+		printf("%ld %d is sleeping\n", ft_count_time(p), p->id);
+		usleep(p->info->ts * 1000);
+		
+		printf("%ld %d is thinking\n", ft_count_time(p), p->id);
+		
+		if (p->info->nt != -1)
+			p->eating_times--;
 			
-		}
-		printf("%ld %d is sleeping\n", ft_duration(p->start_time), p->id);
-		usleep(1000 * p->data->ts);
+		pthread_mutex_lock(&(p->eating_times_mutex));
+		if(p->eating_times == 0)
+			break ;
+		pthread_mutex_unlock(&(p->eating_times_mutex));
 		
-		printf("%ld %d is thinking\n", ft_duration(p->start_time), p->id);
-		
+		// printf("-----------------------\n")
 		
 	}
-	 return (NULL);
-}
-
-void ft_print(long time, char *msg,t_philo_data *p)// cause riutines are working in the same time time we need to lock it utile the first one printf the folloed by the second and so on
-{
-	pthread_mutex_lock(&(p->data->lock_print));
-	printf("%ld %d %s\n", time, p->id, msg);
-	pthread_mutex_unlock(&(p->data->lock_print));
 	
+	return NULL;
 }
 
-void ft_check_death(t_philo_data *p)
+void ft_create_threads(t_philo *p)
 {
-	while(1)
-	{
-		if((ft_timer() - p->last_meal) > (p->data->td))
-		{
-			//free
-			printf("%ld %d died", ft_duration(p->start_time), p->id);// lock the mutex but dont unlock it cause this is the last mesage
-			return;
-		}
-		p = p->next;
-	}
-}
+	int j;
+	int r1;
+	int r2;
 
-void ft_launch(t_philo_data **p)
-{
-	int i;
 
-	i = 0;
- 	while(i < (*p)->data->n)
+	j = 0;
+	while(j < p->info->n)
 	{
-		if(pthread_create(&((*p)->thread), NULL, ft_routine, *p) != 0)
+
+		p->started_time = ft_epoch_time();
+		p->last_eat = p->started_time;
+		r1 = pthread_create(&(p->thread), NULL, ft_routine, p);
+		r2 = pthread_detach(p->thread);
+		if(r1 != 0 || r2 != 0)
 		{
-			write(1, "Error\nPthread_create function failed!", 38);
-			exit (1);
+			printf("Error\npthread-create failed!");
+			return ;
 		}
 		usleep(100);
-		(*p) = (*p)->next;
-		i++;
-	}
-
-	ft_check_death(*p);
-	
-	i = 0;
-	while(i < (*p)->data->n)
-	{
-		if(pthread_join((*p)->thread, NULL) != 0)
-		{
-			write(1, "Error\npthread_join failed!", 27);
-			exit (1);
-		}
-		*p = (*p)->next;
-		i++;
-	}
-}
-
-//---------------------------------
-void print_list(t_philo_data *p)
-{
-	while(p)
-	{
 		p = p->next;
-		if (p->id == 1)
-		 	break;
+		j++;
+
 	}
+}
+
+void ft_join_threads(t_philo *p)
+{
+	int j;
+	int r;
 	
+
+	j = 0;
+	while(j < p->info->n)
+	{
+		r = pthread_join(p->thread, NULL);
+		if(r != 0)
+		{
+			printf("Error\npthread_join failed!");
+			return ;
+		}
+		p = p->next;
+		j++;
+	}
 }
 
 
 
-int main (int argc, char **argv)
+int check_if_done(t_philo *p)
 {
-	//dont forget to protect pthread create and join...
-	t_data f;
-	t_philo_data *p;
-	// int i = -1;
+	int i = 0;
+	while (i < p->info->n)
+	{
+		pthread_mutex_lock(&p->eating_times_mutex);
+		if (p->eating_times != 0)
+			return (0);
+		pthread_mutex_unlock(&p->eating_times_mutex);
+		p = p->next;
+		i++;
+	}
+	return (1);
+}
 
-	p = NULL;
+void ft_check_death_and_starvation(t_philo *p)
+{
+	// long t;
+	while(p != NULL)
+	{
+		// printf()
+
+		// if we have nt number of times each philo must eat => after the philo eat nt times we dont care about starving anymore
+		
+		pthread_mutex_lock(&(p->last_eat_mutex));
+		pthread_mutex_lock(&(p->eating_times_mutex));
+		if(p->eating_times != 0 && ft_epoch_time() -  p->last_eat >= p->info->td)
+		{
+			printf("%ld %d died\n", ft_count_time(p), p->id);
+			return ;
+		}
+		pthread_mutex_unlock(&(p->last_eat_mutex));
+		pthread_mutex_unlock(&(p->eating_times_mutex));
+		if (p->info->nt != -1 && check_if_done(p))
+			return ;
+		p = p->next;
+	}
+}
+
+int main(int argc, char **argv)
+{
+	t_info *i = malloc(sizeof(t_info));
+	t_philo *p;
+	
 	ft_check_1(argc, argv);
 	ft_check_2(argv);
 	ft_check_3(argv);
-	ft_args_to_numbers(argc, argv, &f);
-	ft_check_4(&f);
-	// while (++i < f.n)
-	// 	pthread_mutex_init(f.forks, NULL);
-	p = ft_create_philosophers(&f);
-	ft_launch(&p);
-	// printf("%d     %d     %d   %d    %d", f.n, f.td, f.te, f.ts, f.nt);
+	ft_args_to_numbers(argc, argv, i);
+	ft_check_4(i);
+	p = ft_create_philosophers(i);
+	if(p != NULL)
+	{
+		ft_create_threads(p);
+		ft_check_death_and_starvation(p);
+		// ft_join_threads(p);
 
-
+		ft_free_linked_list(p->info->n, p);
+	}
 }
 
-// for each philo :
-// thread  create_
-// id 0 1 2 3 
-// fork  mutex
+
+	// int n;// number of philosophoers = number of forks.
+	// int	td;//if this time runs out and the philo did not eat again or after the beginig of the program they die,
+	// int	te;// the time needs by a philo to eat, it requirse for a philo to hold tow forks.
+	// int	ts;//time the philo spend sleeping
+	// int	nt;// number_of_times_each_philosopher_must_eat - program stops when the philosophers eat nt times exactly.
+	// // pthread_mutex_t printf_mutex;
+
+	
+
+
+	
+// n    td te ts nt
+// number_of_philosophers 
+// time_to_die 
+// time_to_eat 
+// time_to_sleep [number_of_times_each_philosopher_must_eat]

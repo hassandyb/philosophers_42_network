@@ -5,16 +5,16 @@
 #                                                     +:+ +:+         +:+      #
 #    By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/05/04 15:38:43 by hed-dyb           #+#    #+#              #
-#    Updated: 2023/05/11 11:51:04 by hed-dyb          ###   ########.fr        #
+#    Created: 2023/05/18 15:08:18 by hed-dyb           #+#    #+#              #
+#    Updated: 2023/05/22 11:39:16 by hed-dyb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc 
 RM = rm -f 
-FLAGS = -Wall -Werror -Wextra 
-FILES = philo.c
+FLAGS = -Wall -Werror -Wextra -g -fsanitize=thread
+FILES = philo.c parsing.c utils.c
 
 OBJ = $(FILES:.c=.o)
 

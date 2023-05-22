@@ -1,17 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <pthread.h>
-#include <time.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/syscall.h>
 
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
+#include <sys/time.h>
+
+
+long ft_epoch_time()
+{
+	struct timeval tv;
+	int r;
+	
+	r = gettimeofday(&tv, NULL);
+	if(r != 0)
+		return (-1);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
+}
 
 int main ()
 {
-	struct timeval t;
-
-	gettimeofday(&t, NULL);
-	printf("tv_sec = %ld\ntv_usec = %d\n", t.tv_sec, t.tv_usec);
+	printf("%ld\n", ft_epoch_time());
 }
