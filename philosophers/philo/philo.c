@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/22 13:50:04 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 12:30:05 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ void	ft_free_linked_list(int count, t_philo *p)
 
 t_philo *ft_create_node(int count, t_philo *p, t_info *i)
 {
-
 	t_philo *node;
 	node = malloc(sizeof(t_philo));
 	if(node == NULL)
 	{
 		ft_free_linked_list(count, p);
+		free (i);
 		return NULL;
 	}
 
@@ -65,11 +65,14 @@ t_philo *ft_create_node(int count, t_philo *p, t_info *i)
 	node->next = NULL;
 
 	node->eating_times = i->nt;
-	pthread_mutex_init(&node->fork, NULL);
-	pthread_mutex_init(&node->eating_times_mutex, NULL);
-	pthread_mutex_init(&node->last_eat_mutex, NULL);
+	if(pthread_mutex_init(&node->fork, NULL) != 0 || pthread_mutex_init(&node->lock, NULL) != 0)
+	{
+		printf("Eror\npthread_mutex_init failed!");
+		ft_free_linked_list(count, p);
+		free (i);
+		return NULL;
+	}
 	return (node);
-
 }
 
 t_philo *ft_create_philosophers(t_info *i)
@@ -79,11 +82,9 @@ t_philo *ft_create_philosophers(t_info *i)
 	t_philo *new;
 	int x;
 
-	p = NULL;
 	p = ft_create_node(1, p, i);
 	if(p == NULL)
 		return NULL;
-
 	x = 0;
 	old = p;
 	while(x < i-> n - 1)// -1 cause we already create  node above
@@ -99,13 +100,6 @@ t_philo *ft_create_philosophers(t_info *i)
 	return (p);
 }
 
-	int n;
-	int	td;
-	int	te;
-	int	ts;
-	int	nt;
-
-	
 int main(int argc, char **argv)
 {	
 	t_info	*i;
@@ -114,9 +108,10 @@ int main(int argc, char **argv)
 	i = ft_parsing(argc, argv);
 	if( i == NULL)
 		return (0);
-	
 	p = ft_create_philosophers(i);
 	if(p == NULL)
 		return (0);
-	printf("%d    %d   %d  %d    %d  \n", i->n, i->td, i->te, i->ts, i->nt);
+
+	printf("")
+	
 }

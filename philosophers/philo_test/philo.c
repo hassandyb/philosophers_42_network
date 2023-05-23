@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/22 12:07:00 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/22 15:50:17 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,14 +111,17 @@ void *ft_routine(void *arg)
 	
 	while(p != NULL)
 	{
-		pthread_mutex_lock(&p->fork);// in this stage threads/ philos try to take their fork
-		printf("%ld %d has taken a fork\n", ft_count_time(p), p->id);
-		pthread_mutex_lock(&p->next->fork);// in the stage a philos trying to kake the lest forks 
+		// pthread_mutex_lock(&p->fork);// in this stage threads/ philos try to take their fork
+		// printf("%ld %d has taken a fork\n", ft_count_time(p), p->id);
+		// pthread_mutex_lock(&p->next->fork);// in the stage a philos trying to kake the lest forks 
+		print_log(,)
 		printf("%ld %d has taken the left fork\n", ft_count_time(p), p->id);
 		printf("%ld %d is eating\n", ft_count_time(p), p->id);
 		pthread_mutex_lock(&p->last_eat_mutex);
 		p->last_eat = ft_epoch_time();
 		pthread_mutex_unlock(&p->last_eat_mutex);
+		if (p->info->nt != -1)
+			p->eating_times--;
 		
 
 		usleep(p->info->te * 1000);		
@@ -130,8 +133,6 @@ void *ft_routine(void *arg)
 		
 		printf("%ld %d is thinking\n", ft_count_time(p), p->id);
 		
-		if (p->info->nt != -1)
-			p->eating_times--;
 			
 		pthread_mutex_lock(&(p->eating_times_mutex));
 		if(p->eating_times == 0)

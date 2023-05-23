@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:10:02 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/22 14:00:09 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 11:55:13 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,11 @@ typedef struct s_philo
 	t_info *info;
 	pthread_mutex_t fork;
 	struct s_philo *next;
-
-	
 	pthread_t thread;
-
-	
 	long last_eat;
-	pthread_mutex_t last_eat_mutex;
 	int eating_times;
-	pthread_mutex_t eating_times_mutex;
+	pthread_mutex_t lock;
+
 	
 }t_philo;
 

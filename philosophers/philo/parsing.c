@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:03:21 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/22 14:12:55 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 12:26:10 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int ft_check_1(int argc, char **argv)
 	}
 	return 1;
 }
-
 
 int	ft_check_2(char **argv)
 {
@@ -106,32 +105,20 @@ int ft_check_4(t_info *i)
 	return 1;
 }
 
-
-	int n;
-	int	td;
-	int	te;
-	int	ts;
-	int	nt;
-	
 t_info	*ft_parsing(int argc, char **argv)
 {
 	t_info *i;
-	i = malloc(sizeof(t_info));
-	if(i == NULL)
-		return NULL;
 	if(ft_check_1(argc, argv) == 0)
 		return NULL;
 	if(ft_check_2(argv) == 0)
 		return NULL;
 	if(ft_check_3(argv) == 0)
 		return NULL;
-
-
-
-		
+			
+	i = malloc(sizeof(t_info));
+	if(i == NULL)
+		return NULL;
 	i->n = ft_atoi(argv[1]);// indice 0 is the executable
-
-	
 	i->td = ft_atoi(argv[2]);
 	i->te = ft_atoi(argv[3]);
 	i->ts = ft_atoi(argv[4]);
@@ -140,6 +127,9 @@ t_info	*ft_parsing(int argc, char **argv)
 	else
 		i->nt = -1;	
 	if(ft_check_4(i) == 0)
+	{
+		free (i);
 		return NULL;
+	}
 	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 18:38:27 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/21 16:46:10 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/22 15:47:55 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_info
 	int	te;// the time needs by a philo to eat, it requirse for a philo to hold tow forks.
 	int	ts;//time the philo spend sleeping
 	int	nt;// number_of_times_each_philosopher_must_eat - program stops when the philosophers eat nt times exactly.
-	// pthread_mutex_t printf_mutex;
+	pthread_mutex_t printf_mutex;
 
 	
 }t_info;
@@ -64,4 +64,6 @@ int ft_atoi(char *arg);
 void ft_args_to_numbers(int argc, char **argv, t_info *i);
 void ft_check_4(t_info *i);
 t_philo *ft_create_philosophers(t_info *i);
+long ft_count_time(t_philo *p);
+long ft_epoch_time();
 #endif
