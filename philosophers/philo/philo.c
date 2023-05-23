@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 15:10:05 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 16:53:22 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,59 @@ long ft_epoch_time()
 	return((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
 }
 
+
+// ft_print(t_philo *p, char *msg)
+// {
+// 	pthread_mutex_lock(&(p->info->printf_mutex));
+// 	printf()
+// 	if()
+// 	pthread_mutex_unlock(&(p->info->printf_mutex));
+// }
+
+
 void *ft_routine(void *arg)
 {
 	t_philo *p;
 	p = arg;
-	return NULL;
+	if(p->id % 2 == 0)
+		usleep(100);
+	while(1)
+	{
+		pthread_mutex_lock(&(p->fork));
+		ft_print(p, "has taken a fork");
+		pthread_mutex_lock(&(p->next->fork));
+		ft_print(p, "has taken the second fork");
+		ft_print(p, "is eating");
+		
+		pthread_mutex_lock(&(p->lock));
+		p->last_eat = ft_epoch_time();
+		pthread_mutex_lock(&(p->lock));
+		usleep(p->info->te * 1000);
+
+		pthread_mutex_unlock(&(p->fork));
+		pthread_mutex_unlock(&(p->next->fork));
+		
+		ft_print(p, "is sleeping");
+		usleep(p->info->ts * 1000);
+		ft_print(p, "is thinking");
+
+		pthread_mutex_lock(&(p->lock));
+		if(p->info->nt != -1)
+			p->eating_times--;
+		if(p->eating_times == 0)
+			break;
+		pthread_mutex_unlock(&(p->lock));
+	}
+	// return 
 }
+
 int ft_create_threads(t_philo *p)
 {
 	int	j;
 
 	j = 0;
 	p->info->started_time = ft_epoch_time();
+	pthread_mutex_init(&(p->info->printf_mutex), NULL);
 	if(p->info->started_time == 0)
 		return (0);
 	while(j < p->info->n)

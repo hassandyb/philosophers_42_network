@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:10:02 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 14:20:09 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 16:48:07 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_info
 	int	ts;
 	int	nt;
 	long started_time; // started epoch time for each thread - we need to store each time a thread started
-	// pthread_mutex_t printf_mutex;
+	pthread_mutex_t printf_mutex;
 
 	
 }t_info;

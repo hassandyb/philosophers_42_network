@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:17:49 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 14:53:45 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 16:50:43 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_philo *ft_create_node(int nodes_number, t_philo *p, t_info *i)
 	node->eating_times = i->nt;
 	node->info = i;
 	node->next = NULL;
-	if(pthread_mutex_init(&node->fork, NULL) != 0 || pthread_mutex_init(&node->lock, NULL) != 0)
+	if(pthread_mutex_init(&(node->fork), NULL) != 0 || pthread_mutex_init(&(node->lock), NULL) != 0)
 	{
 		printf("Eror\npthread_mutex_init failed!");
 		ft_free_linked_list(nodes_number - 1, p);
