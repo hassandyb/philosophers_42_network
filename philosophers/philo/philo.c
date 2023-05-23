@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 12:30:05 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 15:10:05 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,74 +31,43 @@ int ft_atoi(char *arg)
 
 	return result;
 }
+//-----------------------
 
-void	ft_free_linked_list(int count, t_philo *p)
+long ft_epoch_time()
 {
-	int x;
-
-	x = 0;
-	t_philo	*node_saver;
-	while(x < count)
-	{
-		node_saver = p;
-		p = p->next;
-		free(node_saver);
-		x++;
-	}
-	p = NULL;
+	struct timeval tv;
+	if(gettimeofday(&tv, NULL) != 0)
+		return 0;
+	
+	return((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
 }
 
-t_philo *ft_create_node(int count, t_philo *p, t_info *i)
-{
-	t_philo *node;
-	node = malloc(sizeof(t_philo));
-	if(node == NULL)
-	{
-		ft_free_linked_list(count, p);
-		free (i);
-		return NULL;
-	}
-
-	node->id = count;
-	node->nt_count = i->nt;
-	node->info = i;
-	node->next = NULL;
-
-	node->eating_times = i->nt;
-	if(pthread_mutex_init(&node->fork, NULL) != 0 || pthread_mutex_init(&node->lock, NULL) != 0)
-	{
-		printf("Eror\npthread_mutex_init failed!");
-		ft_free_linked_list(count, p);
-		free (i);
-		return NULL;
-	}
-	return (node);
-}
-
-t_philo *ft_create_philosophers(t_info *i)
+void *ft_routine(void *arg)
 {
 	t_philo *p;
-	t_philo *old;
-	t_philo *new;
-	int x;
-
-	p = ft_create_node(1, p, i);
-	if(p == NULL)
-		return NULL;
-	x = 0;
-	old = p;
-	while(x < i-> n - 1)// -1 cause we already create  node above
-	{
-		new = ft_create_node(x + 2, p, i);
-		if(p == NULL)
-			return NULL;
-		old->next = new;
-		old = old->next;
-		x++;
-	}
-	new->next = p;
-	return (p);
+	p = arg;
+	return NULL;
 }
+int ft_create_threads(t_philo *p)
+{
+	int	j;
+
+	j = 0;
+	p->info->started_time = ft_epoch_time();
+	if(p->info->started_time == 0)
+		return (0);
+	while(j < p->info->n)
+	{
+		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
+			return 0;
+		if(pthread_detach(p->thread) != 0)
+			return 0;
+		p = p->next;
+		j++;
+	}
+	return (1);
+}
+
 
 int main(int argc, char **argv)
 {	
@@ -108,10 +77,16 @@ int main(int argc, char **argv)
 	i = ft_parsing(argc, argv);
 	if( i == NULL)
 		return (0);
+	// printf("%d   %d   %d   %d    %d\n", i->n, i->td, i->te, i->ts,  i->nt);
 	p = ft_create_philosophers(i);
 	if(p == NULL)
 		return (0);
-
-	printf("")
+	i->started_time = -1;
+	if(ft_create_threads(p) == 0)
+	{
+		ft_free_linked_list(i->n, p);
+		free(i);
+		return (0);
+	}
 	
 }

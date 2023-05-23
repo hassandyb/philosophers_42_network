@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:03:21 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 12:26:10 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 14:40:14 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,13 @@ int ft_check_4(t_info *i)
 t_info	*ft_parsing(int argc, char **argv)
 {
 	t_info *i;
+	
 	if(ft_check_1(argc, argv) == 0)
 		return NULL;
 	if(ft_check_2(argv) == 0)
 		return NULL;
 	if(ft_check_3(argv) == 0)
-		return NULL;
-			
+		return NULL;	
 	i = malloc(sizeof(t_info));
 	if(i == NULL)
 		return NULL;

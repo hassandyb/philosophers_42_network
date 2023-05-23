@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:10:02 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 11:55:13 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/23 14:20:09 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,15 @@ typedef struct s_info
 
 typedef struct s_philo
 {
-	//initilozed in tft_create_philosophers function;
 	int id;
-	int nt_count;//(nt) for each one , int the number if phols must eat    => because for each philo we need to increment evry time he eats so we exit onc e the variable raecher zero for each  pholo
-	t_info *info;
-	pthread_mutex_t fork;
-	struct s_philo *next;
-	pthread_t thread;
-	long last_eat;
 	int eating_times;
+	long last_eat;// for starvation
+	t_info *info;
+	
+	struct s_philo *next;
+	pthread_mutex_t fork;
 	pthread_mutex_t lock;
+	pthread_t thread;
 
 	
 }t_philo;
@@ -60,4 +59,6 @@ t_info	*ft_parsing(int argc, char **argv);
 
 int ft_check_4(t_info *i);
 t_philo *ft_create_philosophers(t_info *i);
+t_philo *ft_create_node(int count, t_philo *p, t_info *i);
+void	ft_free_linked_list(int count, t_philo *p);
 #endif
