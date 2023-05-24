@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 16:53:22 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 12:58:02 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,26 @@ long ft_epoch_time()
 	return((tv.tv_sec * 1000) + (tv.tv_usec * 0.001));
 }
 
+long ft_count_time(t_philo *p)
+{
+	return(ft_epoch_time() - p->info->started_time);
+}
 
-// ft_print(t_philo *p, char *msg)
-// {
-// 	pthread_mutex_lock(&(p->info->printf_mutex));
-// 	printf()
-// 	if()
-// 	pthread_mutex_unlock(&(p->info->printf_mutex));
-// }
-
+void ft_print(t_philo *p, char *msg)
+{
+	pthread_mutex_lock(&(p->info->printf_mutex));
+	printf("%ld %d %s\n", ft_count_time(p), p->id, msg);
+	// if(msg[])
+	pthread_mutex_unlock(&(p->info->printf_mutex));
+}
 
 void *ft_routine(void *arg)
 {
 	t_philo *p;
 	p = arg;
+	printf("here -----\n");
 	if(p->id % 2 == 0)
-		usleep(100);
+		usleep(800);
 	while(1)
 	{
 		pthread_mutex_lock(&(p->fork));
@@ -85,13 +89,12 @@ void *ft_routine(void *arg)
 			break;
 		pthread_mutex_unlock(&(p->lock));
 	}
-	// return 
+	return NULL;
 }
 
 int ft_create_threads(t_philo *p)
 {
 	int	j;
-
 	j = 0;
 	p->info->started_time = ft_epoch_time();
 	pthread_mutex_init(&(p->info->printf_mutex), NULL);
@@ -106,9 +109,18 @@ int ft_create_threads(t_philo *p)
 		p = p->next;
 		j++;
 	}
+
 	return (1);
 }
+//--------------------------
 
+void ft_check_death_and_starving(t_philo *p)
+{
+	while(1)
+	{
+		
+	}
+}
 
 int main(int argc, char **argv)
 {	
@@ -118,16 +130,17 @@ int main(int argc, char **argv)
 	i = ft_parsing(argc, argv);
 	if( i == NULL)
 		return (0);
-	// printf("%d   %d   %d   %d    %d\n", i->n, i->td, i->te, i->ts,  i->nt);
 	p = ft_create_philosophers(i);
 	if(p == NULL)
 		return (0);
 	i->started_time = -1;
 	if(ft_create_threads(p) == 0)
 	{
+		
 		ft_free_linked_list(i->n, p);
 		free(i);
 		return (0);
 	}
+	// ft_check_death_and_starving(p);
 	
 }
