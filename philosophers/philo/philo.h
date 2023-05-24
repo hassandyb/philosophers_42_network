@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:10:02 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 16:48:07 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 16:37:40 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,6 @@ int ft_check_4(t_info *i);
 t_philo *ft_create_philosophers(t_info *i);
 t_philo *ft_create_node(int count, t_philo *p, t_info *i);
 void	ft_free_linked_list(int count, t_philo *p);
+long ft_epoch_time();
+void ms_sleep(long time_ms);
 #endif

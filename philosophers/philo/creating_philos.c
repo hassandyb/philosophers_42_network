@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:17:49 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 16:50:43 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 15:57:38 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ t_philo *ft_create_philosophers(t_info *i)
 	t_philo *old;
 	t_philo *new;
 	int x;
+	new = NULL;
 	p = NULL;
 	p = ft_create_node(1, p, i);
 	if(p == NULL)
@@ -74,6 +75,7 @@ t_philo *ft_create_philosophers(t_info *i)
 		old = old->next;
 		x++;
 	}
-	new->next = p;
+	if(new != NULL)
+		new->next = p;
 	return (p);
 }

@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/24 14:57:41 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 16:37:27 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ int ft_atoi(char *arg)
 	return result;
 }
 //-----------------------
-
+// case of one phlio,
+// usleep function...
 long ft_epoch_time()
 {
 	struct timeval tv;
@@ -51,8 +52,29 @@ void ft_print(t_philo *p, char *msg)
 {
 	pthread_mutex_lock(&(p->info->printf_mutex));
 	printf("%ld %d %s\n", ft_count_time(p), p->id, msg);
-	// if(msg[])
+	if(msg[3] == 'd')
+		return ;
 	pthread_mutex_unlock(&(p->info->printf_mutex));
+}
+
+void ft_eating(t_philo *p)
+{
+
+	pthread_mutex_lock(&(p->fork));
+	ft_print(p, "has taken a fork");
+	if (p->info->n == 1)
+		pthread_mutex_lock(&(p->fork));
+	else
+	 	pthread_mutex_lock(&(p->next->fork));
+	ft_print(p, "has taken the second fork");
+	ft_print(p, "is eating");
+	
+	pthread_mutex_lock(&(p->lock));
+	p->last_eat = ft_epoch_time();
+	pthread_mutex_unlock(&(p->lock));
+	ms_sleep(p->info->te);
+	pthread_mutex_unlock(&(p->fork));
+	pthread_mutex_unlock(&(p->next->fork));	
 }
 
 void *ft_routine(void *arg)
@@ -64,22 +86,10 @@ void *ft_routine(void *arg)
 		usleep(800);
 	while(1)
 	{
-		pthread_mutex_lock(&(p->fork));
-		ft_print(p, "has taken a fork");
-		pthread_mutex_lock(&(p->next->fork));
-		ft_print(p, "has taken the second fork");
-		ft_print(p, "is eating");
-		
-		pthread_mutex_lock(&(p->lock));
-		p->last_eat = ft_epoch_time();
-		pthread_mutex_unlock(&(p->lock));
-		usleep(p->info->te * 1000);
-
-		pthread_mutex_unlock(&(p->fork));
-		pthread_mutex_unlock(&(p->next->fork));
+		ft_eating(p);
 		
 		ft_print(p, "is sleeping");
-		usleep(p->info->ts * 1000);
+		ms_sleep(p->info->ts);
 		ft_print(p, "is thinking");
 
 		pthread_mutex_lock(&(p->lock));
@@ -97,15 +107,17 @@ int ft_create_threads(t_philo *p)
 	int	j;
 	j = 0;
 	p->last_eat = ft_epoch_time();
+	//printf("here --------\n");
 	p->info->started_time = ft_epoch_time();
 	pthread_mutex_init(&(p->info->printf_mutex), NULL);
-	while(j < p->info->n)
+	while(p && j < p->info->n)
 	{
 		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
 			return 0;
 		if(pthread_detach(p->thread) != 0)
 			return 0;
 		p = p->next;
+	
 		j++;
 
 	}
@@ -145,6 +157,7 @@ int main(int argc, char **argv)
 	if( i == NULL)
 		return (0);
 	p = ft_create_philosophers(i);
+	
 	if(p == NULL)
 		return (0);
 	i->started_time = -1;
