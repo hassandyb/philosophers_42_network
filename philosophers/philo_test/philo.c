@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 15:09:11 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 16:31:59 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 14:45:18 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ void ft_check_death_and_starvation(t_philo *p)
 		
 		pthread_mutex_lock(&(p->last_eat_mutex));
 		pthread_mutex_lock(&(p->eating_times_mutex));
-		if(p->eating_times != 0 && ft_epoch_time() -  p->last_eat >= p->info->td)
+		if(ft_epoch_time() -  p->last_eat >= p->info->td)
 		{
 			printf("%ld %d died\n", ft_count_time(p), p->id);
 			return ;

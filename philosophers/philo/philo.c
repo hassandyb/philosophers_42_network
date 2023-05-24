@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/24 12:58:02 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/24 14:57:41 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void *ft_routine(void *arg)
 {
 	t_philo *p;
 	p = arg;
-	printf("here -----\n");
+	
 	if(p->id % 2 == 0)
 		usleep(800);
 	while(1)
@@ -72,7 +72,7 @@ void *ft_routine(void *arg)
 		
 		pthread_mutex_lock(&(p->lock));
 		p->last_eat = ft_epoch_time();
-		pthread_mutex_lock(&(p->lock));
+		pthread_mutex_unlock(&(p->lock));
 		usleep(p->info->te * 1000);
 
 		pthread_mutex_unlock(&(p->fork));
@@ -96,10 +96,9 @@ int ft_create_threads(t_philo *p)
 {
 	int	j;
 	j = 0;
+	p->last_eat = ft_epoch_time();
 	p->info->started_time = ft_epoch_time();
 	pthread_mutex_init(&(p->info->printf_mutex), NULL);
-	if(p->info->started_time == 0)
-		return (0);
 	while(j < p->info->n)
 	{
 		if(pthread_create(&(p->thread), NULL, ft_routine, p) != 0)
@@ -108,18 +107,33 @@ int ft_create_threads(t_philo *p)
 			return 0;
 		p = p->next;
 		j++;
+
 	}
 
 	return (1);
 }
 //--------------------------
-
-void ft_check_death_and_starving(t_philo *p)
+//how to check if gied 
+int ft_check_death_and_eating_times(t_philo *p)
 {
-	while(1)
+	int j;
+
+	j = 0;
+	if(ft_epoch_time() - p->last_eat >= p->info->td)
 	{
-		
+		ft_print(p, "is died");
+		return 0;
 	}
+	while(j < p->info->n)
+	{
+		if(p->eating_times == 0)
+			p = p->next;
+		else
+			break ;
+		j++;
+	}
+	return 1;
+	
 }
 
 int main(int argc, char **argv)
@@ -141,6 +155,11 @@ int main(int argc, char **argv)
 		free(i);
 		return (0);
 	}
-	// ft_check_death_and_starving(p);
-	
+	while (1)
+	{
+		if(ft_check_death_and_eating_times(p) == 0)
+			break;
+		usleep(500);
+	}
+	return (0);
 }
