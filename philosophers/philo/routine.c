@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 13:56:57 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/25 13:57:22 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/25 19:08:09 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ void *ft_routine(void *arg)
 		if(p->info->nt != -1)
 			p->eating_times--;
 		if(p->eating_times == 0)
+		{
+			pthread_mutex_unlock(&(p->lock));
 			break;
+		}
 		pthread_mutex_unlock(&(p->lock));
 	}
 	return NULL;

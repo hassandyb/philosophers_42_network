@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/25 13:58:20 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/25 19:13:52 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,24 +67,51 @@ int ft_create_threads(t_philo *p)
 	return (1);
 }
 
+// int ft_check_eating_times(t_philo *p)
+// {
+// 	int j;
+
+// 	j = 0;
+// 	while(j < p->info->n)
+// 	{
+// 		if(p->eating_times > 0)
+// 			return (1);
+// 		j++;
+// 		p = p->next;
+// 	}
+// 	return (0);
+// }
+
 int ft_check_death_and_eating_times(t_philo *p)
 {
 	int j;
 
-	j = 0;
+	pthread_mutex_lock(&(p->lock));
 	if(ft_epoch_time() - p->last_eat >= p->info->td)
 	{
 		ft_print(p, "is died");
 		return 0;
 	}
+	pthread_mutex_unlock(&(p->lock));
+	
+	j = 0;
 	while(j < p->info->n)
 	{
-		if(p->eating_times == 0)
-			p = p->next;
-		else
-			break ;
+		pthread_mutex_lock(&(p->lock));
+		if(p->eating_times > 0)
+		{
+			pthread_mutex_unlock(&(p->lock));
+			break;
+		}
+		pthread_mutex_unlock(&(p->lock));
 		j++;
+		p = p->next;
 	}
+	if(j == p->info->n)
+		return 0;
+	// in case all of the eat eating_timea == 0 the return 0
+	// if (ft_check_eating_times(p) == 0)
+	// 	return 0;
 	return 1;
 	
 }
