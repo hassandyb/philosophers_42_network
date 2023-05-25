@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:10:02 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/24 16:37:40 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/25 13:48:43 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,12 @@ t_philo *ft_create_philosophers(t_info *i);
 t_philo *ft_create_node(int count, t_philo *p, t_info *i);
 void	ft_free_linked_list(int count, t_philo *p);
 long ft_epoch_time();
-void ms_sleep(long time_ms);
+void ft_optimised_usleep(long sleeping_time);
+long ft_count_time(t_philo *p);
+void ft_print(t_philo *p, char *msg);
+void ft_eating(t_philo *p);
+void *ft_routine(void *arg);
+int ft_create_threads(t_philo *p);
+int ft_check_death_and_eating_times(t_philo *p);
+
 #endif

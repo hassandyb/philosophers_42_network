@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 14:17:49 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/24 15:57:38 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/25 14:00:13 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	ft_free_linked_list(int nodes_number, t_philo *p)
 {
-	int x;
+	int	x;
 
 	x = 0;
 	t_philo	*node_saver;
-	while(x < nodes_number)
+	while (x < nodes_number)
 	{
 		node_saver = p;
 		p = p->next;
@@ -28,15 +28,16 @@ void	ft_free_linked_list(int nodes_number, t_philo *p)
 	p = NULL;
 }
 
-t_philo *ft_create_node(int nodes_number, t_philo *p, t_info *i)
+t_philo	*ft_create_node(int nodes_number, t_philo *p, t_info *i)
 {
-	t_philo *node;
+	t_philo	*node;
+
 	node = malloc(sizeof(t_philo));
-	if(node == NULL)
+	if (node == NULL)
 	{
 		ft_free_linked_list(nodes_number - 1, p);
 		free (i);
-		return NULL;
+		return (NULL);
 	}
 
 	node->id = nodes_number;
@@ -48,29 +49,30 @@ t_philo *ft_create_node(int nodes_number, t_philo *p, t_info *i)
 		printf("Eror\npthread_mutex_init failed!");
 		ft_free_linked_list(nodes_number - 1, p);
 		free (i);
-		return NULL;
+		return (NULL);
 	}
 	return (node);
 }
 
-t_philo *ft_create_philosophers(t_info *i)
+t_philo	*ft_create_philosophers(t_info *i)
 {
-	t_philo *p;
-	t_philo *old;
-	t_philo *new;
-	int x;
+	t_philo	*p;
+	t_philo	*old;
+	t_philo	*new;
+	int		x;
+
 	new = NULL;
 	p = NULL;
 	p = ft_create_node(1, p, i);
 	if(p == NULL)
-		return NULL;
+		return (NULL);
 	x = 0;
 	old = p;
-	while(x < i->n - 1)// -1 cause we already create  node above
+	while(x < i->n - 1)
 	{
 		new = ft_create_node(x + 2, p, i);
 		if(p == NULL)
-			return NULL;
+			return (NULL);
 		old->next = new;
 		old = old->next;
 		x++;
