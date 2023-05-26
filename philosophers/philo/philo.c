@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/25 19:13:52 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/26 12:14:47 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,38 +82,88 @@ int ft_create_threads(t_philo *p)
 // 	return (0);
 // }
 
-int ft_check_death_and_eating_times(t_philo *p)
+// int ft_check_death_and_eating_times(t_philo *p)
+// {
+// 	int j;
+
+// 	pthread_mutex_lock(&(p->lock));
+// 	if(ft_epoch_time() - p->last_eat >= p->info->td)
+// 	{
+// 		ft_print(p, "is died");
+// 		return 0;
+// 	}
+// 	pthread_mutex_unlock(&(p->lock));
+	
+// 	j = 0;
+// 	while(j < p->info->n)
+// 	{
+// 		pthread_mutex_lock(&(p->lock));
+// 		if(p->eating_times == 0)
+// 		{
+// 			pthread_mutex_unlock(&(p->lock));
+// 			break;
+// 		}
+// 		pthread_mutex_unlock(&(p->lock));
+// 		j++;
+// 		if(p->info->n == 1)
+// 			return 1;
+// 		p = p->next;
+		
+// 	}
+// 	printf("--------------------------------------- %d  \n", j);
+// 	if(j == p->info->n)
+// 		return 0;
+// 	// in case all of the eat eating_timea == 0 the return 0
+// 	// if (ft_check_eating_times(p) == 0)
+// 	// 	return 0;
+// 	return 1;
+	
+// }
+
+int ft_check_death(t_philo *p)// return 0 to break it to exit
 {
 	int j;
 
-	pthread_mutex_lock(&(p->lock));
-	if(ft_epoch_time() - p->last_eat >= p->info->td)
-	{
-		ft_print(p, "is died");
-		return 0;
-	}
-	pthread_mutex_unlock(&(p->lock));
-	
 	j = 0;
-	while(j < p->info->n)
+	while(p != NULL && j < p->info->n )
 	{
 		pthread_mutex_lock(&(p->lock));
-		if(p->eating_times > 0)
+		if(p->info->nt <= 0 && ft_epoch_time() - p->last_eat >= p->info->td)
 		{
-			pthread_mutex_unlock(&(p->lock));
-			break;
+			ft_print(p, "is died");
+			return 0;
 		}
 		pthread_mutex_unlock(&(p->lock));
 		j++;
 		p = p->next;
 	}
-	if(j == p->info->n)
-		return 0;
-	// in case all of the eat eating_timea == 0 the return 0
-	// if (ft_check_eating_times(p) == 0)
-	// 	return 0;
-	return 1;
-	
+	return (1);
+}
+
+int ft_check_eating_times(t_philo *p)
+{
+	int j;
+	pthread_mutex_lock(&(p->lock));
+	if(p->eating_times < 0)
+	{
+		pthread_mutex_unlock(&(p->lock));
+		return (1);
+	}
+	pthread_mutex_unlock(&(p->lock));
+	j = 0;
+	while(p != NULL && j < p->info->n)
+	{
+		pthread_mutex_lock(&(p->lock));
+		if(p->eating_times > 0)
+		{
+			pthread_mutex_unlock(&(p->lock));
+			return (1);
+		}
+		pthread_mutex_unlock(&(p->lock));
+		j++;
+		p = p->next;
+	}
+	return (0);
 }
 
 int main(int argc, char **argv)
@@ -136,10 +186,16 @@ int main(int argc, char **argv)
 		free(i);
 		return (0);
 	}
+	// printf("------   %d -----\n", p->info->td);
 	while (1)
 	{
-		if(ft_check_death_and_eating_times(p) == 0)
+		
+		if(ft_check_death(p) == 0)
 			break;
+		if(ft_check_eating_times(p) == 0)
+			break;
+		// if(ft_check_death_and_eating_times(p) == 0)
+		// 	break;
 		usleep(500);
 	}
 	free(i);

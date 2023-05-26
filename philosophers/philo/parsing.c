@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:03:21 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/23 14:40:14 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/26 11:44:36 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ int	ft_check_3(char **argv)
 
 int ft_check_4(t_info *i)
 {
-	if(i->n == 0 || i->td == 0 || i->te == 0 || i->ts == 0 || i->nt == 0)
+	if(i->n <= 0 || i->td <= 0 || i->te <= 0 || i->ts <= 0 || i->nt < 0)
 	{
-		write(1, "Error\n One of your args equal to ZERO", 1);
+		write(1, "Error\n One of your args equal to ZERO", 38);
 		return 0;
 	}
 	return 1;

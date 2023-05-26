@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 13:56:57 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/25 19:08:09 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/26 12:13:50 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void ft_eating(t_philo *p)
 	pthread_mutex_lock(&(p->lock));
 	p->last_eat = ft_epoch_time();
 	pthread_mutex_unlock(&(p->lock));
+
 	ft_optimised_usleep(p->info->te);
 	pthread_mutex_unlock(&(p->fork));
 	pthread_mutex_unlock(&(p->next->fork));	
@@ -59,7 +60,11 @@ void *ft_routine(void *arg)
 {
 	t_philo *p;
 	p = arg;
-	
+	if(p->info->nt == 0)
+	{
+		while(1)
+			usleep(10000);
+	}
 	if(p->id % 2 == 0)
 		usleep(800);
 	while(1)
@@ -67,6 +72,7 @@ void *ft_routine(void *arg)
 		ft_eating(p);
 		
 		ft_print(p, "is sleeping");
+
 		ft_optimised_usleep(p->info->ts);
 		ft_print(p, "is thinking");
 
