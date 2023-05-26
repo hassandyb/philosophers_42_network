@@ -6,14 +6,14 @@
 #    By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/22 12:01:59 by hed-dyb           #+#    #+#              #
-#    Updated: 2023/05/26 15:03:02 by hed-dyb          ###   ########.fr        #
+#    Updated: 2023/05/26 16:04:32 by hed-dyb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc 
 RM = rm -f 
-FLAGS = -Wall -Werror -Wextra -g -fsanitize=thread
+FLAGS = -Wall -Werror -Wextra #-fsanitize=thread
 FILES = philo.c parsing.c creating_philos.c routine.c
 
 OBJ = $(FILES:.c=.o)
