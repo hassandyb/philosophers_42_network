@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 13:56:57 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/26 12:13:50 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/26 15:01:17 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,7 @@ void *ft_routine(void *arg)
 {
 	t_philo *p;
 	p = arg;
-	if(p->info->nt == 0)
-	{
-		while(1)
-			usleep(10000);
-	}
+
 	if(p->id % 2 == 0)
 		usleep(800);
 	while(1)
