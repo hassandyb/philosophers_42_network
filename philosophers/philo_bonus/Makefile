@@ -6,15 +6,15 @@
 #    By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/28 11:48:14 by hed-dyb           #+#    #+#              #
-#    Updated: 2023/05/28 12:09:41 by hed-dyb          ###   ########.fr        #
+#    Updated: 2023/05/28 15:38:25 by hed-dyb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philo
+NAME = philo_bonus
 CC = cc 
 RM = rm -f 
-FLAGS = -Wall -Werror -Wextra fsanitize
-FILES = philo_bonus.c parsing_bonus.c creating_philos_bonus.c 
+FLAGS = -Wall -Werror -Wextra #fsanitize
+FILES = philo.c parsing.c creating_philos.c 
 
 OBJ = $(FILES:.c=.o)
 

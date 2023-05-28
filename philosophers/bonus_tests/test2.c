@@ -25,36 +25,39 @@
 // }
 
 
-
-
+//in parent process returns pid thos the created process ( child)
+// in child process returns 0
 
 
 //------------------------------------------
-
+#include <stdlib.h>
 
 int main ()
 {
-	int r1, r2, p1, p2;
+	int r1, r2, p1, p2, r3, p3;
 
 
 	printf("one process running - its pid = %d\n", getpid());
 	r1 = fork();
 	if(r1 > 0)
 	{
-		printf("\ntow process ar now running!\n\n");
-		printf("parent process is now running - its pid = %d, it child process pid = %d\n", p1 = getpid(), r1);
+		printf("parent %d\n", getpid());
 	}
 	if(r1 == 0)
 	{
 		
-		printf("the first child process is running - its pid = %d\n", getpid());
+		printf("child = %d\n", getpid());
+		exit(0);
 	}
 	printf("-----------------------\n");
 	r2 = fork();
 	if(r2 > 0)
-		printf("the second child process is running - its pid = %d\n", getpid());
+		printf("parent = %d\n", getpid());
 	if(r2 == 0)
-		printf("the third child process is now running - it s pid = %d\n", r2);
+		printf("child = %d\n", getpid());
+
+	r3 = fork();
+	
 }
 
 
