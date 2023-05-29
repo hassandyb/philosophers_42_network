@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 13:56:57 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/26 16:10:10 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/29 12:15:10 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	*ft_routine(void *arg)
 
 	p = arg;
 	if (p->id % 2 == 0)
-		usleep(800);
+		usleep(200);
 	while (1)
 	{
 		ft_eating(p);

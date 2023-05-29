@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:37:10 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/28 17:13:34 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/29 11:51:43 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,7 @@ typedef struct s_philo
 	t_info			*info;
 	int				eating_times;
 	long			last_eat;
-
-
-
-	//pid pid
+	pid_t			pid;
 	//sem_t lock...
 	// pthread_t		thread;
 }t_philo;

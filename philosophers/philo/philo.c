@@ -6,11 +6,14 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/28 20:44:52 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/29 15:24:27 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+sem_open 
+sem post 
 
 void	ft_optimised_usleep(long sleeping_time)
 {
@@ -50,7 +53,7 @@ int	ft_check_death(t_philo *p)
 	while (p != NULL && j < p->info->n)
 	{
 		pthread_mutex_lock(&(p->lock));
-		if (ft_epoch_time() - p->last_eat >= p->info->td && p->info->nt < 0)
+		if (ft_epoch_time() - p->last_eat >= p->info->td && p->info->nt != 0)
 		{
 			ft_print(p, "is died");
 			return (0);

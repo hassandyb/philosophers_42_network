@@ -6,12 +6,22 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/28 15:46:45 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/29 12:38:02 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	ft_optimised_usleep(long sleeping_time)
+{
+	long	starting_time;
+
+	starting_time = ft_epoch_time();
+	while (ft_epoch_time() - starting_time < sleeping_time)
+	{
+		usleep(100);
+	}
+}
 
 long	ft_epoch_time(void)
 {
@@ -27,45 +37,62 @@ long	ft_count_time(t_philo *p)
 	return (ft_epoch_time() - p->info->started_time);
 }
 
+void ft_print(t_philo *p, char *msg)
+{
+	printf("%ld %d %s\n", ft_count_time(p), p->id, msg);
+}
 
+void ft_eating(t_philo *p)
+{
+	ft_print(p, "has taken a fork");
+	ft_print(p, "has taken the second fork");
+	ft_print(p, "is eating");
+	p->last_eat = ft_epoch_time();
+	ft_optimised_usleep(p->info->te);
+}
 
-// typedef struct s_info
-// {
-// 	int				n;
-// 	int				td;
-// 	int				te;
-// 	int				ts;
-// 	int				nt;
-// 	long			started_time;
-	
+void ft_routine(t_philo *p, t_info *i)
+{
+	if(p->id % 2 == 0)
+		usleep(200);
+	while(1)
+	{
+		ft_eating(p);
+		ft_print(p, "is sleeping");
+		ft_optimised_usleep(p->info->ts);
+		ft_print(p, "is thinking");
+		if(p->info->nt != -1)
+			p->eating_times--;
+		if(p->eating_times == 0)
+			break;
 
-// }t_info;
+	}
+	ft_free_linked_list(i->n, p);
+	free(i);
+	exit (0);
+}
 
-// typedef struct s_philo
-// {
-// 	int				id;
-// 	struct s_philo	*next;
-// 	t_info			*info;
-// 	int				eating_times;
-// 	long			last_eat;
-
-
-
-	
-// 	// pthread_t		thread;
-// }t_philo;
-
-int ft_create_processes(t_philo *p)
+void ft_create_processes(t_philo *p, t_info *i)
 {
 	int j;
-	int r;
-	
+	t_philo *head;
+
+	head = p;
 	p->info->started_time = ft_epoch_time();
 	j = 0;
-	while(p != NULL && j < p->info->n )
+	while(p != NULL && j < p->info->n)
 	{
-		r = fork();
-		if(r > 0)
+		p->pid = fork();
+		if(p->pid == 0)
+			ft_routine(p, i);
+		if(p->pid == -1)
+		{
+			ft_free_linked_list(i->n, head);
+			free(i);
+			exit (1);
+		}
+		p = p->next;
+		j++;
 	}
 }
 
@@ -80,10 +107,5 @@ int main (int argc, char **argv)
 	p = ft_create_philosophers(i);
 	if (p == NULL)
 		return (0);
-	if(ft_create_processes(p) == 0)
-	{
-		free (i);
-		ft_free_linked_list(i->n, p);
-		return (0);
-	}
+	ft_create_processes(p, i);
 }
