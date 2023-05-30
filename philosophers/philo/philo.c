@@ -6,14 +6,11 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:02:20 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/29 15:24:27 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/29 15:29:12 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-sem_open 
-sem post 
 
 void	ft_optimised_usleep(long sleeping_time)
 {

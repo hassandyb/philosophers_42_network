@@ -6,14 +6,14 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:36:35 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/29 11:38:54 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/30 15:51:06 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "philo.h"
 
-int	ft_check_1(int argc, char **argv)
+void	ft_check_1(int argc, char **argv)
 {
 	int	j;
 	int	i;
@@ -21,7 +21,7 @@ int	ft_check_1(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 	{
 		write(1, "Error\ncheck args number!", 25);
-		return (0);
+		exit (1);
 	}
 	j = 1;
 	while (argv[j])
@@ -32,14 +32,14 @@ int	ft_check_1(int argc, char **argv)
 		if (argv[j][i] == '\0' || argv[j][0] == '\0')
 		{
 			write(1, "Error\nEmpty argument or arument full of tabs/spaces", 56);
-			return (0);
+			exit (1);
 		}
 		j++;
 	}
-	return (1);
+
 }
 
-int	ft_check_2(char **argv)
+void	ft_check_2(char **argv)
 {
 	int	j;
 	int	i;
@@ -54,21 +54,21 @@ int	ft_check_2(char **argv)
 				&& (argv[j][i] < '0' || argv[j][i] > '9'))
 			{
 				write(2, "Error\nWrong charcter or you have -!", 36);
-				return (0);
+				exit (1);
 			}
 			if (argv[j][i] == '+' && (argv[j][i + 1] == ' '
 				|| argv[j][i + 1] == '\t' || argv[j][i + 1] == '\0'))
 			{
 				write(2, "Error\n A + followed by Tab, space or null char!", 50);
-				return (0);
+				exit (1);
 			}
 		}
 		j++;
 	}
-	return (1);
+
 }
 
-int	ft_check_3(char **argv)
+void	ft_check_3(char **argv)
 {
 	int	y;
 	int	x;
@@ -83,56 +83,54 @@ int	ft_check_3(char **argv)
 				&& argv[y][x + 1] == '+')
 			{
 				write(1, "Error\nAdd space or tab after the sign +", 40);
-				return (0);
+				exit (1);
 			}
 			if (argv[y][x] == '+' && argv[y][x] == '+')
 			{
 				write(1, "Error\nYou have double + or more", 32);
-				return (0);
+				exit (1);
 			}
 			x++;
 		}
 		y++;
 	}
-	return (1);
+
 }
 
-int	ft_check_4(t_info *i)
+void	ft_check_4(t_info *i)
 {
 	if (i->n <= 0 || i->td <= 0 || i->te <= 0
 		|| i->ts <= 0 || i->nt < -1 || i->nt == 0)
 	{
 		write(1, "Error\n One of your args equal to ZERO", 38);
-		return (0);
+		free(i);
+		exit (1);
 	}
-	return (1);
+
 }
 
 t_info	*ft_parsing(int argc, char **argv)
 {
 	t_info	*i;
 
-	if (ft_check_1(argc, argv) == 0)
-		return (NULL);
-	if (ft_check_2(argv) == 0)
-		return (NULL);
-	if (ft_check_3(argv) == 0)
-		return (NULL);
+	ft_check_1(argc, argv);
+	ft_check_2(argv);
+	ft_check_3(argv);
 	i = malloc(sizeof(t_info));
 	if (i == NULL)
-		return (NULL);
+		exit (1);
 	i->n = ft_atoi(argv[1]);
 	i->td = ft_atoi(argv[2]);
 	i->te = ft_atoi(argv[3]);
 	i->ts = ft_atoi(argv[4]);
+	
+	i->fork = sem_open("/fork_semaphore", O_CREAT, 0644, i->n);
+	i->lock = sem_open("/lock_semaphore", O_CREAT, 0644, 1);
+	i->print = sem_open("/print_semaphore", O_CREAT, 0644, 1);
 	if (argc == 6)
 		i->nt = ft_atoi(argv[5]);
 	else
 		i->nt = -1;
-	if (ft_check_4(i) == 0)
-	{
-		free (i);
-		return (NULL);
-	}
+	ft_check_4(i);
 	return (i);
 }

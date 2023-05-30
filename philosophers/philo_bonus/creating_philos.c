@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:36:15 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/28 15:38:09 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/30 16:23:25 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,14 @@ t_philo	*ft_create_philosophers(t_info *i)
 	p = NULL;
 	p = ft_create_node(1, p, i);
 	if (p == NULL)
-		return (NULL);
+		exit(1);
 	x = 0;
 	old = p;
 	while (x < i->n - 1)
 	{
 		new = ft_create_node(x + 2, p, i);
 		if (p == NULL)
-			return (NULL);
+			exit (1);
 		old->next = new;
 		old = old->next;
 		x++;

@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/29 12:38:02 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/30 17:08:14 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,13 @@ void ft_create_processes(t_philo *p, t_info *i)
 	{
 		p->pid = fork();
 		if(p->pid == 0)
-			ft_routine(p, i);
+		{
+
+			//pthread_create
+			//pthread detach
+			//ft_check death
+			//ft_check eating times
+		}
 		if(p->pid == -1)
 		{
 			ft_free_linked_list(i->n, head);
@@ -102,10 +108,7 @@ int main (int argc, char **argv)
 	t_philo	*p;
 
 	i = ft_parsing(argc, argv);
-	if (i == NULL)
-		return (0);
 	p = ft_create_philosophers(i);
-	if (p == NULL)
-		return (0);
+
 	ft_create_processes(p, i);
 }
