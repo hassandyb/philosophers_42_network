@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/30 17:52:19 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/30 18:27:59 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,23 +75,26 @@ void ft_routine(t_philo *p, t_info *i)
 void ft_create_processes(t_philo *p, t_info *i)
 {
 	int j;
-	t_philo *head;
+	// t_philo *head;
+	// pthread_t	philo;
 
 	head = p;
 	p->info->started_time = ft_epoch_time();
 	j = 0;
-	while(p != NULL && j < p->info->n)
+	while (p != NULL && j < p->info->n)
 	{
 		p->pid = fork();
 		if(p->pid == 0)
 		{
-
-			//pthread_create
-			//pthread detach
-			//ft_check death
-			//ft_check eating times
+			pthread_create(&ph)// same as mandotory add semafore
+			//pthread detach//
+			while(1)
+			{
+				//ft_check death// if the he dead, kill all the process group
+				//ft_check eating times// if a philo eated enough times exit the process
+			}
 		}
-		if(p->pid == -1)
+		if (p->pid == -1)
 		{
 			ft_free_linked_list(i->n, head);
 			free(i);
@@ -100,7 +103,11 @@ void ft_create_processes(t_philo *p, t_info *i)
 		p = p->next;
 		j++;
 	}
+
 }
+//kill(0, SIGINT)
+
+//wulie(i < philonumber)
 
 int main (int argc, char **argv)
 {
@@ -111,6 +118,12 @@ int main (int argc, char **argv)
 	p = ft_create_philosophers(i);
 
 	ft_create_processes(p, i);
+	while (i < i->n)
+	{
+		waitpid(p->pid, NULL, 0);
+		i++;
+		p = p->next;
+	}
 }
 
 
