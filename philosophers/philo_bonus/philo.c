@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/30 17:08:14 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/30 17:52:19 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,3 +112,42 @@ int main (int argc, char **argv)
 
 	ft_create_processes(p, i);
 }
+
+
+
+
+
+
+
+//------------------------------------
+// After calling `sem_wait(sem)` and `sem_post(sem)`, the `sem` variable remains unchanged. The `sem` variable is a semaphore descriptor that is used to identify and operate on the semaphore.
+
+// The `sem_wait` function is used to decrement the value of the semaphore. If the semaphore value is greater than zero, it decrements the value and allows the calling process/thread to proceed. If the semaphore value is already zero, indicating that it is being used by another process/thread, `sem_wait` will block the calling process/thread until the semaphore becomes available.
+
+// Here's an example of how you can use `sem_wait`:
+
+// ```c
+// sem_wait(semaphore);
+// // Critical section - code that should be accessed by only one philosopher at a time
+// sem_post(semaphore);
+// ```
+
+// The `sem_post` function is used to increment the value of the semaphore. It "posts" (or releases) the semaphore, indicating that it is available for other processes/threads to use.
+
+// Here's an example of how you can use `sem_post`:
+
+// ```c
+// // Perform some operations before entering the critical section
+
+// sem_post(semaphore);
+
+// // Continue with other operations
+
+// ```
+
+// In the example above, `sem_wait` is called before entering the critical section to acquire the semaphore, ensuring that only one philosopher can access the critical section at a time. `sem_post` is called after the critical section to release the semaphore, allowing other philosophers to acquire it and access the critical section.
+
+// The `sem` variable serves as a handle to the semaphore and is used as an argument to both `sem_wait` and `sem_post` functions to operate on the semaphore identified by the handle.
+
+
+
