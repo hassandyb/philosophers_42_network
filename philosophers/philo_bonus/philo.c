@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/31 12:54:28 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 14:45:00 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,10 @@ void ft_create_processes(t_philo *p, t_info *i)
 		j++;
 	}
 }
-//kill(0, SIGINT)
+//kill(0, SIGINT)   //
 
-//wulie(i < philonumber)
-// you need to know the optimised rpoch ..function work
-//pthread_detach
+// you need to know the optimised rpoch ..function work    // 
+//pthread_detach  //
 //wait pid
 //tests
 int main (int argc, char **argv)

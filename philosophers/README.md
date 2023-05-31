@@ -1,6 +1,6 @@
-###Philosophers
+Philosophers
 
-###Introduction: In this project, you will learn the basics of threading a process.
+Introduction: In this project, you will learn the basics of threading a process.
 You will see how to create threads and you will discover mutexes.
 
 Proccrss == a running program
@@ -62,18 +62,82 @@ Attempting to initialize an already initialized mutex results in undefined behav
 
 pthread_join() tells the main thread to wait for the joined thread to finish. pthread_detach() tells the system to automatically release the resources used by the detached thread when it terminates. The main thread will continue executing after calling pthread_detach(), but it will not end until the detached thread finishes.
 
-Here is a table that summarizes the differences between pthread_join() and pthread_detach():
+The differences between pthread_join() and pthread_detach():
 
 Function			Description
 pthread_join()		Waits for the thread to finish and returns its exit status.
 pthread_detach()	Detaches the thread and releases its resources when it terminates. The main thread 
 
-
-
-
 will continue executing after calling pthread_detach().
 The choice of which function to use depends on the specific requirements of the application. If the main thread needs to wait for the thread to finish, then pthread_join() should be used. If the main thread does not need to wait for the thread to finish, then pthread_detach() can be used.
 
+####   waitpid  function
+
+The `waitpid` function is used to make a parent process wait for the termination of a specific child process. It allows the parent process to retrieve information about the child process after it has exited.
+
+Here's the syntax of the `waitpid` function:
+
+```c
+#include <sys/types.h>
+#include <sys/wait.h>
+
+pid_t waitpid(pid_t pid, int *status, int options);
+```
+
+- `pid`: The process ID of the child process you want to wait for. You can use different values:
+  - `> 0`: Wait for the specific child process with the given process ID.
+  - `-1`: Wait for any child process.
+  - `0`: Wait for any child process in the same process group as the calling process.
+  - `< -1`: Wait for any child process whose process group ID is equal to the absolute value of `pid`.
+- `status`: A pointer to an integer where the exit status or termination information of the child process will be stored.
+- `options`: Optional flags that control the behavior of the `waitpid` function. You can use 0 for default behavior.
+
+The `waitpid` function can have several return values:
+- `-1`: An error occurred, and the child process could not be waited for.
+- `0`: When using `pid` with value 0 or a negative value, it means no child process is available to be waited for.
+- `> 0`: The process ID of the terminated child process that is being waited for.
+
+Here's a simple example demonstrating the usage of `waitpid`:
+
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+    pid_t childPid = fork();
+
+    if (childPid == -1) {
+        perror("fork");
+        return 1;
+    }
+
+    if (childPid == 0) {
+        // Child process
+        printf("Child process executing.\n");
+        sleep(3);
+        printf("Child process exiting.\n");
+        return 0;
+    } else {
+        // Parent process
+        printf("Parent process waiting for child.\n");
+        int status;
+        pid_t terminatedChildPid = waitpid(childPid, &status, 0);
+        if (terminatedChildPid == -1) {
+            perror("waitpid");
+            return 1;
+        }
+        printf("Parent process: Child process with PID %d has exited with status %d.\n", terminatedChildPid, status);
+    }
+
+    return 0;
+}
+```
+
+In this example, the parent process forks a child process. The child process sleeps for 3 seconds and then exits. The parent process uses `waitpid` to wait for the termination of the child process. The exit status of the child process is stored in the `status` variable, which the parent process can then use or display as needed.
+
+Note: The `waitpid` function is just one way to wait for child processes in Linux/UNIX systems. There are other related functions like `wait` and `waitid` that offer different features and behaviors.
 
 
 
