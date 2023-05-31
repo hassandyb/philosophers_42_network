@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:37:10 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/31 12:06:03 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 15:03:04 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 #include <semaphore.h>
+#include <signal.h>
 
 typedef struct s_info
 {

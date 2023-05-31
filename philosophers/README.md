@@ -71,6 +71,43 @@ pthread_detach()	Detaches the thread and releases its resources when it terminat
 will continue executing after calling pthread_detach().
 The choice of which function to use depends on the specific requirements of the application. If the main thread needs to wait for the thread to finish, then pthread_join() should be used. If the main thread does not need to wait for the thread to finish, then pthread_detach() can be used.
 
+
+
+Semaphore   ------------------------------------
+
+After calling `sem_wait(sem)` and `sem_post(sem)`, the `sem` variable remains unchanged. The `sem` variable is a semaphore descriptor that is used to identify and operate on the semaphore.
+
+The `sem_wait` function is used to decrement the value of the semaphore. If the semaphore value is greater than zero, it decrements the value and allows the calling process/thread to proceed. If the semaphore value is already zero, indicating that it is being used by another process/thread, `sem_wait` will block the calling process/thread until the semaphore becomes available.
+
+Here's an example of how you can use `sem_wait`:
+
+```c
+sem_wait(semaphore);
+// Critical section - code that should be accessed by only one philosopher at a time
+sem_post(semaphore);
+```
+
+The `sem_post` function is used to increment the value of the semaphore. It "posts" (or releases) the semaphore, indicating that it is available for other processes/threads to use.
+
+Here's an example of how you can use `sem_post`:
+
+```c
+// Perform some operations before entering the critical section
+
+sem_post(semaphore);
+
+// Continue with other operations
+
+```
+
+In the example above, `sem_wait` is called before entering the critical section to acquire the semaphore, ensuring that only one philosopher can access the critical section at a time. `sem_post` is called after the critical section to release the semaphore, allowing other philosophers to acquire it and access the critical section.
+
+The `sem` variable serves as a handle to the semaphore and is used as an argument to both `sem_wait` and `sem_post` functions to operate on the semaphore identified by the handle.
+
+
+
+
+
 ####   waitpid  function
 
 The `waitpid` function is used to make a parent process wait for the termination of a specific child process. It allows the parent process to retrieve information about the child process after it has exited.
@@ -139,7 +176,60 @@ In this example, the parent process forks a child process. The child process sle
 
 Note: The `waitpid` function is just one way to wait for child processes in Linux/UNIX systems. There are other related functions like `wait` and `waitid` that offer different features and behaviors.
 
+##  Sem_open
 
+The `sem_open` function in C is used to create or open a named semaphore. Named semaphores allow synchronization and communication between different processes.
+
+Here's the syntax of the `sem_open` function:
+
+```c
+#include <semaphore.h>
+
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
+```
+
+- `name`: The name of the semaphore. It should start with a forward slash ("/") followed by a unique name.
+- `oflag`: The flag indicating how the semaphore should be opened. It can take one or more of the following values:
+  - `O_CREAT`: Create the semaphore if it doesn't exist.
+  - `O_EXCL`: When combined with `O_CREAT`, ensures that the semaphore is created exclusively (fails if it already exists).
+- `mode`: The permissions of the semaphore when it is created (if `O_CREAT` is used). It follows the same format as file permissions in `chmod()`.
+- `value`: The initial value of the semaphore.
+
+The `sem_open` function returns a pointer to the semaphore descriptor (`sem_t *`) if successful, or `SEM_FAILED` on error.
+
+Here's an example that demonstrates the usage of `sem_open`:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <semaphore.h>
+
+int main() {
+    sem_t *mySemaphore;
+
+    // Create or open the semaphore
+    mySemaphore = sem_open("/my_semaphore", O_CREAT | O_EXCL, 0644, 1);
+    if (mySemaphore == SEM_FAILED) {
+        perror("sem_open");
+        exit(1);
+    }
+
+    // Semaphore operations
+    printf("Semaphore created/opened successfully!\n");
+
+    // Close and unlink the semaphore when done
+    sem_close(mySemaphore);
+    sem_unlink("/my_semaphore");
+
+    return 0;
+}
+```
+
+In this example, the `sem_open` function is used to create or open a named semaphore named "/my_semaphore" with an initial value of 1. If the semaphore creation/opening is successful, the `sem_open` function returns a valid semaphore descriptor (`sem_t *`). You can then perform semaphore operations or synchronization using this descriptor.
+
+After using the semaphore, it's important to close it using `sem_close` and unlink it using `sem_unlink`. Closing the semaphore releases the resources associated with it, and unlinking removes it from the system.
+
+Note: Named semaphores created with `sem_open` should be closed and unlinked when they are no longer needed to ensure proper cleanup of system resources.
 
 
 

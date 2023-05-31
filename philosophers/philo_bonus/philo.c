@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/31 14:45:00 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 16:02:16 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ long	ft_count_time(t_philo *p)
 
 void ft_print(t_philo *p, char *msg)
 {
-	sem_wait(p->info->lock);
+	sem_wait(p->info->print);
 	printf("%ld %d %s\n", ft_count_time(p), p->id, msg);
 	if(msg[3] == 'd')
 		return ;
-	sem_post(p->info->lock);
+	sem_post(p->info->print);
 }
 
 void ft_eating(t_philo *p)
@@ -130,12 +130,13 @@ void ft_create_processes(t_philo *p, t_info *i)
 		p->pid = fork();
 		if(p->pid == 0)
 		{
+			// printf("here ----\n");
 			pthread_create(&(p->thread), NULL, ft_routine, p);// same as mandotory add semafore
 			pthread_detach(p->thread);
 			while(1)
 			{
-				ft_check_death(p);// if the he dead, kill all the process group
-				ft_check_eating_times(p);// if a philo eated enough times exit the process
+				// ft_check_death(p);// if the he dead, kill all the process group
+				// ft_check_eating_times(p);// if a philo eated enough times exit the process
 				usleep(1000);
 			}
 		}
@@ -145,11 +146,14 @@ void ft_create_processes(t_philo *p, t_info *i)
 		j++;
 	}
 }
+// how do you grantee that those process are charing the same semaphore i mean when 
+//i use sem_wait or post how those this is chred between them even if they are defrent processess.
+
 //kill(0, SIGINT)   //
 
 // you need to know the optimised rpoch ..function work    // 
 //pthread_detach  //
-//wait pid
+//wait pid  // 
 //tests
 int main (int argc, char **argv)
 {
@@ -159,10 +163,13 @@ int main (int argc, char **argv)
 	
 	i = ft_parsing(argc, argv);
 	p = ft_create_philosophers(i);
+
+	
 	ft_create_processes(p, i);
 	j = 0;
 	while (j < i->n)
 	{
+		
 		waitpid(p->pid, NULL, 0);
 		j++;
 		p = p->next;
@@ -175,35 +182,6 @@ int main (int argc, char **argv)
 
 
 
-//------------------------------------
-// After calling `sem_wait(sem)` and `sem_post(sem)`, the `sem` variable remains unchanged. The `sem` variable is a semaphore descriptor that is used to identify and operate on the semaphore.
-
-// The `sem_wait` function is used to decrement the value of the semaphore. If the semaphore value is greater than zero, it decrements the value and allows the calling process/thread to proceed. If the semaphore value is already zero, indicating that it is being used by another process/thread, `sem_wait` will block the calling process/thread until the semaphore becomes available.
-
-// Here's an example of how you can use `sem_wait`:
-
-// ```c
-// sem_wait(semaphore);
-// // Critical section - code that should be accessed by only one philosopher at a time
-// sem_post(semaphore);
-// ```
-
-// The `sem_post` function is used to increment the value of the semaphore. It "posts" (or releases) the semaphore, indicating that it is available for other processes/threads to use.
-
-// Here's an example of how you can use `sem_post`:
-
-// ```c
-// // Perform some operations before entering the critical section
-
-// sem_post(semaphore);
-
-// // Continue with other operations
-
-// ```
-
-// In the example above, `sem_wait` is called before entering the critical section to acquire the semaphore, ensuring that only one philosopher can access the critical section at a time. `sem_post` is called after the critical section to release the semaphore, allowing other philosophers to acquire it and access the critical section.
-
-// The `sem` variable serves as a handle to the semaphore and is used as an argument to both `sem_wait` and `sem_post` functions to operate on the semaphore identified by the handle.
 
 
 
