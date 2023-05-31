@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:37:10 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/30 15:37:36 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 12:06:03 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_philo
 	int				eating_times;
 	long			last_eat;
 	pid_t			pid;
-	// pthread_t		thread;
+	pthread_t		thread;
 }t_philo;
 
 
@@ -61,6 +61,6 @@ t_philo	*ft_create_node(int nodes_number, t_philo *p, t_info *i);
 t_philo	*ft_create_philosophers(t_info *i);
 long	ft_epoch_time(void);
 long	ft_count_time(t_philo *p);
-
+void ft_free_and_exit(t_info *i, t_philo *head);
 
 #endif

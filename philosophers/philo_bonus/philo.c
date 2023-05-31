@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/30 18:27:59 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 12:06:37 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,33 @@ long	ft_count_time(t_philo *p)
 
 void ft_print(t_philo *p, char *msg)
 {
+	sem_wait(p->info->lock);
 	printf("%ld %d %s\n", ft_count_time(p), p->id, msg);
+	if(msg[3] == 'd')
+		return ;
+	sem_post(p->info->lock);
 }
 
 void ft_eating(t_philo *p)
 {
+	sem_wait(p->info->fork);
 	ft_print(p, "has taken a fork");
+	sem_wait(p->info->fork);// you have to add the case of 1 philo
 	ft_print(p, "has taken the second fork");
 	ft_print(p, "is eating");
+	sem_wait(p->info->lock);
 	p->last_eat = ft_epoch_time();
+	sem_post(p->info->lock);
 	ft_optimised_usleep(p->info->te);
+	sem_post(p->info->fork);
+	sem_post(p->info->fork);
 }
 
-void ft_routine(t_philo *p, t_info *i)
+void *ft_routine(void *arg)
 {
+	t_philo *p;
+	
+	p = arg;
 	if(p->id % 2 == 0)
 		usleep(200);
 	while(1)
@@ -61,22 +74,34 @@ void ft_routine(t_philo *p, t_info *i)
 		ft_print(p, "is sleeping");
 		ft_optimised_usleep(p->info->ts);
 		ft_print(p, "is thinking");
+		sem_wait(p->info->lock);
 		if(p->info->nt != -1)
 			p->eating_times--;
 		if(p->eating_times == 0)
+		{
+			sem_post(p->info->lock);
 			break;
-
+		}
+		sem_post(p->info->lock);
 	}
-	ft_free_linked_list(i->n, p);
-	free(i);
-	exit (0);
+	return (NULL);
 }
 
+void ft_free_and_exit(t_info *i, t_philo *head)
+{
+	ft_free_linked_list(i->n, head);
+	free(i);
+	exit (1);
+}
+
+void ft_check_death(t_philo *p)
+{
+	
+}
 void ft_create_processes(t_philo *p, t_info *i)
 {
 	int j;
-	// t_philo *head;
-	// pthread_t	philo;
+	t_philo *head;
 
 	head = p;
 	p->info->started_time = ft_epoch_time();
@@ -86,24 +111,19 @@ void ft_create_processes(t_philo *p, t_info *i)
 		p->pid = fork();
 		if(p->pid == 0)
 		{
-			pthread_create(&ph)// same as mandotory add semafore
-			//pthread detach//
+			pthread_create(&(p->thread), NULL, ft_routine, p);// same as mandotory add semafore
+			pthread_detach(p->thread);
 			while(1)
 			{
-				//ft_check death// if the he dead, kill all the process group
+				ft_check_death(p);// if the he dead, kill all the process group
 				//ft_check eating times// if a philo eated enough times exit the process
 			}
 		}
 		if (p->pid == -1)
-		{
-			ft_free_linked_list(i->n, head);
-			free(i);
-			exit (1);
-		}
+			ft_free_and_exit(i, p);
 		p = p->next;
 		j++;
 	}
-
 }
 //kill(0, SIGINT)
 
@@ -111,17 +131,18 @@ void ft_create_processes(t_philo *p, t_info *i)
 
 int main (int argc, char **argv)
 {
-		t_info	*i;
+	t_info	*i;
 	t_philo	*p;
-
+	int j;
+	
 	i = ft_parsing(argc, argv);
 	p = ft_create_philosophers(i);
-
 	ft_create_processes(p, i);
-	while (i < i->n)
+	j = 0;
+	while (j < i->n)
 	{
 		waitpid(p->pid, NULL, 0);
-		i++;
+		j++;
 		p = p->next;
 	}
 }
