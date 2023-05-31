@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 11:49:41 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/31 12:06:37 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/05/31 12:54:28 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,27 @@ void ft_free_and_exit(t_info *i, t_philo *head)
 
 void ft_check_death(t_philo *p)
 {
-	
+	sem_wait(p->info->lock);
+	if(ft_epoch_time() - p->last_eat >= p->info->td != p->info->nt != 0)
+	{
+		ft_print(p, "is died");
+		kill (0, SIGINT);
+	}
+	sem_post(p->info->lock);
 }
+
+void ft_check_eating_times(t_philo *p)
+{
+	sem_wait(p->info->lock);
+	if(p->eating_times == -1)
+		return ;
+	sem_post(p->info->lock);
+	sem_wait(p->info->lock);
+	if(p->eating_times == 0)
+		exit (0);
+	sem_post(p->info->lock);
+}
+
 void ft_create_processes(t_philo *p, t_info *i)
 {
 	int j;
@@ -116,7 +135,8 @@ void ft_create_processes(t_philo *p, t_info *i)
 			while(1)
 			{
 				ft_check_death(p);// if the he dead, kill all the process group
-				//ft_check eating times// if a philo eated enough times exit the process
+				ft_check_eating_times(p);// if a philo eated enough times exit the process
+				usleep(1000);
 			}
 		}
 		if (p->pid == -1)
@@ -128,7 +148,10 @@ void ft_create_processes(t_philo *p, t_info *i)
 //kill(0, SIGINT)
 
 //wulie(i < philonumber)
-
+// you need to know the optimised rpoch ..function work
+//pthread_detach
+//wait pid
+//tests
 int main (int argc, char **argv)
 {
 	t_info	*i;
