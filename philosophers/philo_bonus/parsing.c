@@ -6,10 +6,9 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:36:35 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/06/01 14:33:10 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/06/01 16:47:35 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "philo.h"
 
@@ -36,7 +35,6 @@ void	ft_check_1(int argc, char **argv)
 		}
 		j++;
 	}
-
 }
 
 void	ft_check_2(char **argv)
@@ -65,7 +63,6 @@ void	ft_check_2(char **argv)
 		}
 		j++;
 	}
-
 }
 
 void	ft_check_3(char **argv)
@@ -94,19 +91,22 @@ void	ft_check_3(char **argv)
 		}
 		y++;
 	}
-
 }
 
 void	ft_check_4(t_info *i)
 {
 	if (i->n <= 0 || i->td <= 0 || i->te <= 0
-		|| i->ts <= 0 || i->nt < -1 || i->nt == 0)
+		|| i->ts <= 0 || i->nt < -1)
 	{
 		write(1, "Error\n One of your args equal to ZERO", 38);
 		free(i);
 		exit (1);
 	}
-
+	if (i->nt == 0)
+	{
+		free(i);
+		exit (1);
+	}
 }
 
 t_info	*ft_parsing(int argc, char **argv)
@@ -129,7 +129,6 @@ t_info	*ft_parsing(int argc, char **argv)
 	i->fork = sem_open("/fork_semaphore", O_CREAT, 0644, i->n);
 	i->lock = sem_open("/lock_semaphore", O_CREAT, 0644, 1);
 	i->print = sem_open("/print_semaphore", O_CREAT, 0644, 1);
-
 	if (argc == 6)
 		i->nt = ft_atoi(argv[5]);
 	else

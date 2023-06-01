@@ -6,11 +6,18 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:36:15 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/30 16:23:25 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/06/01 16:46:02 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_free_and_exit(t_info *i, t_philo *head)
+{
+	ft_free_linked_list(i->n, head);
+	free(i);
+	kill(0, SIGINT);
+}
 
 int	ft_atoi(char *arg)
 {
@@ -63,7 +70,6 @@ t_philo	*ft_create_node(int nodes_number, t_philo *p, t_info *i)
 	node->info = i;
 	node->next = NULL;
 	node->last_eat = ft_epoch_time();
-
 	return (node);
 }
 
