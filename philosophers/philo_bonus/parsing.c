@@ -6,7 +6,7 @@
 /*   By: hed-dyb <hed-dyb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 15:36:35 by hed-dyb           #+#    #+#             */
-/*   Updated: 2023/05/31 15:59:23 by hed-dyb          ###   ########.fr       */
+/*   Updated: 2023/06/01 14:33:10 by hed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,9 @@ t_info	*ft_parsing(int argc, char **argv)
 	i->td = ft_atoi(argv[2]);
 	i->te = ft_atoi(argv[3]);
 	i->ts = ft_atoi(argv[4]);
-
+	sem_unlink("/fork_semaphore");
+	sem_unlink("/lock_semaphore");
+	sem_unlink("/print_semaphore");
 	i->fork = sem_open("/fork_semaphore", O_CREAT, 0644, i->n);
 	i->lock = sem_open("/lock_semaphore", O_CREAT, 0644, 1);
 	i->print = sem_open("/print_semaphore", O_CREAT, 0644, 1);
